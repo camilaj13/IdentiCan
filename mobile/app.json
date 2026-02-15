@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "IdentiCan",
+    "slug": "identican",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#1565C0"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.identican.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "IdentiCan necesita acceso a la cámara para escanear la nariz de tu perro y códigos QR."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#1565C0"
+      },
+      "package": "com.identican.app",
+      "permissions": [
+        "CAMERA"
+      ]
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "IdentiCan necesita acceso a la cámara para escanear la nariz de tu perro."
+        }
+      ]
+    ]
+  }
+}

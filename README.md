@@ -1,47 +1,76 @@
-# Pet-ReID-IMAG
- The 3rd place solution to CVPR2022 Biometrics Workshop Pet Biometric Challenge
----- 
-## Introduction
-- :blush: We only trained one model (ResNeSt) with different scales (i.e., 224, 256, and 288), respectivel achieved 91.7% and 86.27% in phase A and B.
-- :rocket: Traing time cost ~1.5 hour with a V100 16GB, so easy, no bells and whistles! 
-- :eyes: Techical details are described in our [PDF](https://arxiv.org/pdf/2205.15934.pdf). 
-- :point_right: The train/test data can be obtained from [百度云](https://pan.baidu.com/s/17tnCE8b-oSh8xGMHczPzqQ?pwd=imag), [Google drive](https://drive.google.com/drive/folders/1_7pdSRTvD_XdTu8z0MxrM9PDoEuX-tjf?usp=drive_link).
-- :point_right: The weights can be obtained from [百度云](https://pan.baidu.com/s/17tnCE8b-oSh8xGMHczPzqQ?pwd=imag), [Google drive](https://drive.google.com/drive/folders/1_7pdSRTvD_XdTu8z0MxrM9PDoEuX-tjf?usp=drive_link).
-- Click on the star  :star:, Thank you :heart:
-## Requirements
+# IdentiCan
 
-* PyTorch  1.7.0+cu101
-* torchvision  0.8.1+cu101 
+Plataforma de identificación biométrica canina para Argentina. Registrá a tu perro, guardá sus vacunas y generá un QR único para identificarlo.
 
-### Prepare data
+## Características
+
+- **Registro de perros** con datos completos (raza, peso, origen, etc.)
+- **Identificación biométrica** por huella nasal (basado en Pet-ReID-IMAG)
+- **Código QR único** por perro (PNG + PDF 3x3cm para collar)
+- **Registro de vacunas** con historial completo
+- **Límite freemium**: 3 verificaciones/día gratis, ilimitadas para Premium
+- **Roles**: usuario, verificador, admin
+
+## Estructura del Proyecto
 
 ```
-cd ./Pet-ReID-IMAG
-mkidr data
-
-# Download train_dir.zip  
-unzip train_dir.zip  
-
-# move train_dir  to ./pet_ReID-IMAG/data
-````
-## Training instruction
-```
-pip install -r  requirements.txt; cd fastreid/evaluation/rank_cylib; make all
-```
-```
-bash train1.sh
-bash train2.sh
-bash train3.sh
-bash train4.sh
+IdentiCan/
+├── backend/       # API REST (FastAPI + PostgreSQL)
+├── mobile/        # App móvil (React Native + Expo)
+├── ml_model/      # Modelo ML (Pet-ReID-IMAG)
+├── docs/          # Documentación
+└── .github/       # CI/CD workflows
 ```
 
+## Quick Start
 
-## Test on Pet Challenge
+### Backend
+
+```bash
+cd backend
+python -m venv venv && source venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env  # Editar con tus valores
+uvicorn app.main:app --reload
 ```
-bash predict.sh
+
+Documentación API: `http://localhost:8000/docs`
+
+### Mobile
+
+```bash
+cd mobile
+npm install
+npx expo start
 ```
 
-## Acknowledgement
-A large portion of code is borrowed from [fast-reid](https://github.com/JDAI-CV/fast-reid), many thanks  :+1: to their wonderful work!  
+Escanear el QR con Expo Go.
 
-Thanks to my teammate Zijun Huang for his great support :blush:!
+## Stack Tecnológico
+
+| Componente | Tecnología |
+|-----------|------------|
+| Backend | FastAPI, SQLAlchemy, PostgreSQL |
+| Auth | JWT (python-jose), bcrypt |
+| Mobile | React Native, Expo SDK 50 |
+| UI | React Native Paper |
+| ML | Pet-ReID-IMAG (ResNeSt) |
+| Deploy | Railway (backend), EAS (mobile) |
+
+## Documentación
+
+- [Instalación](docs/SETUP.md)
+- [API Reference](docs/API.md)
+- [Deployment](docs/DEPLOYMENT.md)
+- [Arquitectura](docs/ARCHITECTURE.md)
+- [Roadmap](ROADMAP.md)
+
+## Modelo ML
+
+El directorio `ml_model/` contiene el modelo Pet-ReID-IMAG, solución del 3er puesto en CVPR2022 Biometrics Workshop Pet Biometric Challenge. Logra 91.7% de precisión en identificación de mascotas.
+
+## Licencia
+
+Código de la aplicación: MIT License. Ver [LICENSE.md](LICENSE.md).
+
+El modelo ML mantiene su licencia original.
