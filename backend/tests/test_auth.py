@@ -1,37 +1,6 @@
 """Tests for authentication endpoints."""
 
-import pytest
-from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
-
-from app.core.database import Base, get_db
-from app.main import app
-
-# In-memory SQLite for tests
-SQLALCHEMY_DATABASE_URL = "sqlite://"
-
-engine = create_engine(
-    SQLALCHEMY_DATABASE_URL,
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
-TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-
-Base.metadata.create_all(bind=engine)
-
-
-def override_get_db():
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
-app.dependency_overrides[get_db] = override_get_db
-client = TestClient(app)
+from tests.conftest import client
 
 
 class TestRegister:
@@ -49,12 +18,14 @@ class TestRegister:
         assert "access_token" in data
         assert data["user"]["email"] == "test@example.com"
         assert data["user"]["name"] == "Test User"
+        assert data["user"]["role"] == "user"
+        assert data["user"]["is_premium"] is False
 
     def test_register_duplicate_email(self):
         client.post(
             "/api/auth/register",
             json={
-                "email": "duplicate@example.com",
+                "email": "dup@example.com",
                 "password": "password123",
                 "name": "First User",
             },
@@ -62,12 +33,13 @@ class TestRegister:
         response = client.post(
             "/api/auth/register",
             json={
-                "email": "duplicate@example.com",
+                "email": "dup@example.com",
                 "password": "password456",
                 "name": "Second User",
             },
         )
         assert response.status_code == 400
+        assert "email" in response.json()["detail"].lower()
 
     def test_register_short_password(self):
         response = client.post(
@@ -99,11 +71,20 @@ class TestLogin:
         assert response.status_code == 200
         data = response.json()
         assert "access_token" in data
+        assert data["token_type"] == "bearer"
 
     def test_login_wrong_password(self):
+        client.post(
+            "/api/auth/register",
+            json={
+                "email": "wrong@example.com",
+                "password": "password123",
+                "name": "Wrong Pass",
+            },
+        )
         response = client.post(
             "/api/auth/login",
-            json={"email": "login@example.com", "password": "wrongpass"},
+            json={"email": "wrong@example.com", "password": "badpassword"},
         )
         assert response.status_code == 401
 
@@ -117,7 +98,6 @@ class TestLogin:
 
 class TestMe:
     def test_get_me_authenticated(self):
-        # Register and get token
         reg = client.post(
             "/api/auth/register",
             json={
@@ -133,7 +113,14 @@ class TestMe:
         )
         assert response.status_code == 200
         assert response.json()["email"] == "me@example.com"
+        assert response.json()["name"] == "Me User"
 
     def test_get_me_unauthenticated(self):
         response = client.get("/api/auth/me")
+        assert response.status_code == 401
+
+    def test_get_me_invalid_token(self):
+        response = client.get(
+            "/api/auth/me", headers={"Authorization": "Bearer invalidtoken123"}
+        )
         assert response.status_code == 401

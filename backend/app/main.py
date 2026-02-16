@@ -4,12 +4,33 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
 
+from contextlib import asynccontextmanager
+import logging
+
 from app.api import admin, auth, dogs, nose, payments, qr, vaccines
 from app.core.config import settings
 from app.core.database import Base, engine
 
-# Create database tables
-Base.metadata.create_all(bind=engine)
+logger = logging.getLogger(__name__)
+
+
+def _create_tables():
+    """Create database tables if they don't exist."""
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception as e:
+        logger.warning("Could not create tables at startup: %s", e)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    _create_tables()
+    yield
+
+
+# Also try eagerly so tables exist for TestClient without context manager
+_create_tables()
+
 
 # Rate limiter
 limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
@@ -23,6 +44,7 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs",
     redoc_url="/redoc",
+    lifespan=lifespan,
 )
 
 app.state.limiter = limiter
