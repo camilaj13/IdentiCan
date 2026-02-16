@@ -1,24 +1,20 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert, Image } from 'react-native';
 import { Text, Button, Card } from 'react-native-paper';
+import { useTranslation } from '../../i18n';
 import client from '../../api/client';
 import { COLORS, FREE_VERIFICATION_LIMIT } from '../../constants/config';
 import LimitModal from '../../components/LimitModal';
 
 export default function ScanNoseScreen({ navigation }) {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [limitModalVisible, setLimitModalVisible] = useState(false);
   const [limitInfo, setLimitInfo] = useState(null);
 
   const handleScanNose = async () => {
-    // In a real implementation, this would:
-    // 1. Open the camera
-    // 2. Capture a nose image
-    // 3. Send it to the API for verification
-
     setLoading(true);
     try {
-      // Create a mock image file for the API call
       const formData = new FormData();
       formData.append('file', {
         uri: 'mock://nose-image.jpg',
@@ -37,11 +33,11 @@ export default function ScanNoseScreen({ navigation }) {
         setLimitInfo({
           used: detail?.verifications_used || FREE_VERIFICATION_LIMIT,
           limit: detail?.verifications_limit || FREE_VERIFICATION_LIMIT,
-          message: detail?.message || 'Límite diario alcanzado',
+          message: detail?.message || t('limit.dailyLimitReached'),
         });
         setLimitModalVisible(true);
       } else {
-        Alert.alert('Error', 'No se pudo realizar la verificación');
+        Alert.alert(t('common.error'), t('scanNose.errorVerification'));
       }
     } finally {
       setLoading(false);
@@ -53,16 +49,13 @@ export default function ScanNoseScreen({ navigation }) {
       <Card style={styles.card}>
         <Card.Content style={styles.cardContent}>
           <Text style={styles.icon}>👃</Text>
-          <Text style={styles.title}>Escanear Nariz</Text>
-          <Text style={styles.description}>
-            Apuntá la cámara a la nariz del perro para identificarlo.
-            Asegurate de que la nariz esté bien iluminada y enfocada.
-          </Text>
+          <Text style={styles.title}>{t('scanNose.title')}</Text>
+          <Text style={styles.description}>{t('scanNose.description')}</Text>
 
           <View style={styles.steps}>
-            <StepItem number="1" text="Acercá el celular a la nariz del perro" />
-            <StepItem number="2" text="Mantené la cámara estable" />
-            <StepItem number="3" text="Esperá el resultado de la verificación" />
+            <StepItem number="1" text={t('scanNose.step1')} />
+            <StepItem number="2" text={t('scanNose.step2')} />
+            <StepItem number="3" text={t('scanNose.step3')} />
           </View>
         </Card.Content>
       </Card>
@@ -76,7 +69,7 @@ export default function ScanNoseScreen({ navigation }) {
         style={styles.scanButton}
         labelStyle={styles.scanButtonLabel}
       >
-        Iniciar Escaneo
+        {t('scanNose.startScan')}
       </Button>
 
       <Button
@@ -85,7 +78,7 @@ export default function ScanNoseScreen({ navigation }) {
         onPress={() => navigation.navigate('ScanQR')}
         style={styles.altButton}
       >
-        Escanear QR en su lugar
+        {t('scanNose.scanQRInstead')}
       </Button>
 
       <LimitModal

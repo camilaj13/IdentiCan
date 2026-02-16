@@ -1,12 +1,17 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Card, Text, IconButton } from 'react-native-paper';
+import { useTranslation } from '../i18n';
 import { COLORS } from '../constants/config';
 
 export default function VaccineCard({ vaccine, onDelete }) {
+  const { t, language } = useTranslation();
+
+  const dateLocales = { es: 'es-AR', en: 'en-US', pt: 'pt-BR' };
+
   const formatDate = (dateStr) => {
     if (!dateStr) return '-';
-    return new Date(dateStr).toLocaleDateString('es-AR');
+    return new Date(dateStr).toLocaleDateString(dateLocales[language] || 'es-AR');
   };
 
   return (
@@ -26,14 +31,14 @@ export default function VaccineCard({ vaccine, onDelete }) {
         </View>
 
         {vaccine.veterinarian_name && (
-          <Text style={styles.detail}>Vet: {vaccine.veterinarian_name}</Text>
+          <Text style={styles.detail}>{t('vaccineCard.vet')}: {vaccine.veterinarian_name}</Text>
         )}
         {vaccine.clinic_name && (
-          <Text style={styles.detail}>Clínica: {vaccine.clinic_name}</Text>
+          <Text style={styles.detail}>{t('vaccineCard.clinic')}: {vaccine.clinic_name}</Text>
         )}
         {vaccine.next_dose_date && (
           <Text style={styles.nextDose}>
-            Próxima dosis: {formatDate(vaccine.next_dose_date)}
+            {t('vaccineCard.nextDose')}: {formatDate(vaccine.next_dose_date)}
           </Text>
         )}
         {vaccine.notes && <Text style={styles.notes}>{vaccine.notes}</Text>}

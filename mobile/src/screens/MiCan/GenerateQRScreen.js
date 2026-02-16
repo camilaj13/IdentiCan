@@ -2,23 +2,19 @@ import React from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { Text, Button, Card } from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
+import { useTranslation } from '../../i18n';
 import { COLORS } from '../../constants/config';
 
 export default function GenerateQRScreen({ route }) {
   const { dog } = route.params;
+  const { t } = useTranslation();
 
   const handleShare = () => {
-    Alert.alert(
-      'Compartir QR',
-      'La funcionalidad de compartir estará disponible próximamente.',
-    );
+    Alert.alert(t('qr.shareTitle'), t('qr.shareMessage'));
   };
 
   const handleDownloadPDF = () => {
-    Alert.alert(
-      'Descargar PDF',
-      'La descarga de PDF estará disponible próximamente.',
-    );
+    Alert.alert(t('qr.pdfTitle'), t('qr.pdfMessage'));
   };
 
   return (
@@ -38,8 +34,7 @@ export default function GenerateQRScreen({ route }) {
           </View>
 
           <Text style={styles.instructions}>
-            Escaneá este código QR para identificar a {dog.name}.
-            Podés imprimirlo y colocarlo en su collar.
+            {t('qr.scanInstruction', { name: dog.name })}
           </Text>
         </Card.Content>
       </Card>
@@ -51,7 +46,7 @@ export default function GenerateQRScreen({ route }) {
           onPress={handleShare}
           style={styles.button}
         >
-          Compartir
+          {t('qr.share')}
         </Button>
 
         <Button
@@ -60,7 +55,7 @@ export default function GenerateQRScreen({ route }) {
           onPress={handleDownloadPDF}
           style={styles.button}
         >
-          Descargar PDF
+          {t('qr.downloadPDF')}
         </Button>
       </View>
     </View>

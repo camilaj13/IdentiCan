@@ -1,9 +1,12 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Portal, Modal, Text, Button } from 'react-native-paper';
+import { useTranslation } from '../i18n';
 import { COLORS } from '../constants/config';
 
 export default function LimitModal({ visible, onDismiss, limitInfo }) {
+  const { t } = useTranslation();
+
   return (
     <Portal>
       <Modal
@@ -12,17 +15,16 @@ export default function LimitModal({ visible, onDismiss, limitInfo }) {
         contentContainerStyle={styles.container}
       >
         <Text style={styles.icon}>⚠️</Text>
-        <Text style={styles.title}>Límite Diario Alcanzado</Text>
+        <Text style={styles.title}>{t('limit.title')}</Text>
 
         <Text style={styles.description}>
-          {limitInfo?.message ||
-            'Alcanzaste el máximo de verificaciones gratuitas por hoy.'}
+          {limitInfo?.message || t('limit.description')}
         </Text>
 
         {limitInfo && (
           <View style={styles.usageBar}>
             <Text style={styles.usageText}>
-              {limitInfo.used} / {limitInfo.limit} verificaciones usadas
+              {t('limit.usageCount', { used: limitInfo.used, limit: limitInfo.limit })}
             </Text>
             <View style={styles.progressBar}>
               <View
@@ -35,16 +37,14 @@ export default function LimitModal({ visible, onDismiss, limitInfo }) {
           </View>
         )}
 
-        <Text style={styles.upgradeText}>
-          Upgrade a Premium para verificaciones ilimitadas y más beneficios.
-        </Text>
+        <Text style={styles.upgradeText}>{t('limit.upgradeText')}</Text>
 
         <View style={styles.actions}>
           <Button mode="contained" onPress={onDismiss} style={styles.premiumButton}>
-            Ver Premium
+            {t('limit.viewPremium')}
           </Button>
           <Button mode="text" onPress={onDismiss}>
-            Cerrar
+            {t('common.close')}
           </Button>
         </View>
       </Modal>

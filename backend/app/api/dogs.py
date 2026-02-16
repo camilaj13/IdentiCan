@@ -1,10 +1,11 @@
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.core.security import get_current_user
+from app.i18n import get_language, t
 from app.models.dog import Dog
 from app.models.user import User
 from app.schemas.dog import DogCreate, DogResponse, DogUpdate
@@ -20,6 +21,7 @@ def _generate_qr_code(dog_id: int) -> str:
 @router.post("", response_model=DogResponse, status_code=status.HTTP_201_CREATED)
 def create_dog(
     data: DogCreate,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -43,6 +45,7 @@ def create_dog(
 
 @router.get("", response_model=List[DogResponse])
 def list_dogs(
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
@@ -54,16 +57,18 @@ def list_dogs(
 @router.get("/{dog_id}", response_model=DogResponse)
 def get_dog(
     dog_id: int,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     """Obtener un perro por ID."""
+    lang = get_language(request)
     dog = db.query(Dog).filter(Dog.id == dog_id).first()
     if not dog:
-        raise HTTPException(status_code=404, detail="Perro no encontrado")
+        raise HTTPException(status_code=404, detail=t("dog_not_found", lang))
     # Allow owner or admin to view
     if dog.owner_id != current_user.id and current_user.role != "admin":
-        raise HTTPException(status_code=403, detail="No tenés acceso a este perro")
+        raise HTTPException(status_code=403, detail=t("dog_no_access", lang))
     return DogResponse.model_validate(dog)
 
 
@@ -71,15 +76,17 @@ def get_dog(
 def update_dog(
     dog_id: int,
     data: DogUpdate,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     """Actualizar datos de un perro (solo el dueño)."""
+    lang = get_language(request)
     dog = db.query(Dog).filter(Dog.id == dog_id).first()
     if not dog:
-        raise HTTPException(status_code=404, detail="Perro no encontrado")
+        raise HTTPException(status_code=404, detail=t("dog_not_found", lang))
     if dog.owner_id != current_user.id and current_user.role != "admin":
-        raise HTTPException(status_code=403, detail="Solo el dueño puede editar")
+        raise HTTPException(status_code=403, detail=t("dog_only_owner_edit", lang))
 
     update_data = data.model_dump(exclude_unset=True)
     for field, value in update_data.items():
@@ -93,15 +100,17 @@ def update_dog(
 @router.delete("/{dog_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_dog(
     dog_id: int,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     """Eliminar un perro (solo el dueño)."""
+    lang = get_language(request)
     dog = db.query(Dog).filter(Dog.id == dog_id).first()
     if not dog:
-        raise HTTPException(status_code=404, detail="Perro no encontrado")
+        raise HTTPException(status_code=404, detail=t("dog_not_found", lang))
     if dog.owner_id != current_user.id and current_user.role != "admin":
-        raise HTTPException(status_code=403, detail="Solo el dueño puede eliminar")
+        raise HTTPException(status_code=403, detail=t("dog_only_owner_delete", lang))
 
     db.delete(dog)
     db.commit()

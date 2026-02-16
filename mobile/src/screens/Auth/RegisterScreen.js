@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { TextInput, Button, HelperText } from 'react-native-paper';
 import { useAuth } from '../../context/AuthContext';
+import { useTranslation } from '../../i18n';
 import { COLORS } from '../../constants/config';
 
 export default function RegisterScreen({ navigation }) {
   const { register, error, setError } = useAuth();
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
@@ -16,22 +18,21 @@ export default function RegisterScreen({ navigation }) {
 
   const handleRegister = async () => {
     if (!name.trim() || !email.trim() || !password.trim()) {
-      setError('Completá los campos obligatorios');
+      setError(t('auth.fillRequired'));
       return;
     }
     if (password.length < 6) {
-      setError('La contraseña debe tener al menos 6 caracteres');
+      setError(t('auth.passwordMinLength'));
       return;
     }
     if (password !== confirmPassword) {
-      setError('Las contraseñas no coinciden');
+      setError(t('auth.passwordsNoMatch'));
       return;
     }
 
     setLoading(true);
     const success = await register(email.trim().toLowerCase(), password, name.trim(), phone.trim());
     setLoading(false);
-    // Navigation is handled by AuthContext on success
   };
 
   return (
@@ -41,7 +42,7 @@ export default function RegisterScreen({ navigation }) {
     >
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
         <TextInput
-          label="Nombre completo *"
+          label={`${t('auth.fullName')} *`}
           value={name}
           onChangeText={setName}
           mode="outlined"
@@ -49,7 +50,7 @@ export default function RegisterScreen({ navigation }) {
         />
 
         <TextInput
-          label="Email *"
+          label={`${t('auth.email')} *`}
           value={email}
           onChangeText={setEmail}
           mode="outlined"
@@ -60,7 +61,7 @@ export default function RegisterScreen({ navigation }) {
         />
 
         <TextInput
-          label="Teléfono (opcional)"
+          label={t('auth.phone')}
           value={phone}
           onChangeText={setPhone}
           mode="outlined"
@@ -69,7 +70,7 @@ export default function RegisterScreen({ navigation }) {
         />
 
         <TextInput
-          label="Contraseña *"
+          label={`${t('auth.password')} *`}
           value={password}
           onChangeText={setPassword}
           mode="outlined"
@@ -84,7 +85,7 @@ export default function RegisterScreen({ navigation }) {
         />
 
         <TextInput
-          label="Confirmar contraseña *"
+          label={`${t('auth.confirmPassword')} *`}
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           mode="outlined"
@@ -106,7 +107,7 @@ export default function RegisterScreen({ navigation }) {
           style={styles.button}
           labelStyle={styles.buttonLabel}
         >
-          Crear Cuenta
+          {t('auth.register')}
         </Button>
 
         <Button
@@ -117,7 +118,7 @@ export default function RegisterScreen({ navigation }) {
           }}
           style={styles.linkButton}
         >
-          Ya tengo cuenta, iniciar sesión
+          {t('auth.hasAccount')}
         </Button>
       </ScrollView>
     </KeyboardAvoidingView>

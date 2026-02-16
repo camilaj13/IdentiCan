@@ -2,11 +2,13 @@ import React, { useState, useCallback } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text, Card, Button, Chip, Divider, ActivityIndicator } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
+import { useTranslation } from '../../i18n';
 import client from '../../api/client';
 import { COLORS } from '../../constants/config';
 
 export default function DogProfileScreen({ route, navigation }) {
   const { dog: initialDog } = route.params;
+  const { t, language } = useTranslation();
   const [dog, setDog] = useState(initialDog);
   const [loading, setLoading] = useState(false);
 
@@ -24,9 +26,11 @@ export default function DogProfileScreen({ route, navigation }) {
     }, [initialDog.id])
   );
 
+  const dateLocales = { es: 'es-AR', en: 'en-US', pt: 'pt-BR' };
+
   const formatDate = (dateStr) => {
-    if (!dateStr) return 'No registrada';
-    return new Date(dateStr).toLocaleDateString('es-AR');
+    if (!dateStr) return t('dogProfile.notRegistered');
+    return new Date(dateStr).toLocaleDateString(dateLocales[language] || 'es-AR');
   };
 
   return (
@@ -37,7 +41,7 @@ export default function DogProfileScreen({ route, navigation }) {
           <View style={styles.headerRow}>
             <View style={styles.headerInfo}>
               <Text style={styles.dogName}>{dog.name}</Text>
-              <Text style={styles.breed}>{dog.breed || 'Sin raza'}</Text>
+              <Text style={styles.breed}>{dog.breed || t('dog.noBreed')}</Text>
             </View>
             <Chip icon="qrcode" style={styles.qrChip}>
               {dog.qr_code}
@@ -47,12 +51,12 @@ export default function DogProfileScreen({ route, navigation }) {
           <Divider style={styles.divider} />
 
           <View style={styles.detailsGrid}>
-            <DetailItem label="Sexo" value={dog.sex === 'M' ? 'Macho' : 'Hembra'} />
-            <DetailItem label="Edad" value={dog.age_years ? `${dog.age_years} años` : '-'} />
-            <DetailItem label="Peso" value={dog.weight_kg ? `${dog.weight_kg} kg` : '-'} />
-            <DetailItem label="Color" value={dog.color || '-'} />
-            <DetailItem label="Origen" value={dog.origin} />
-            <DetailItem label="Microchip" value={dog.microchip_id || '-'} />
+            <DetailItem label={t('dogProfile.sex')} value={dog.sex === 'M' ? t('dog.male') : t('dog.female')} />
+            <DetailItem label={t('dogProfile.age')} value={dog.age_years ? t('dogProfile.yearsUnit', { count: dog.age_years }) : '-'} />
+            <DetailItem label={t('dogProfile.weight')} value={dog.weight_kg ? t('dogProfile.kgUnit', { value: dog.weight_kg }) : '-'} />
+            <DetailItem label={t('dogProfile.color')} value={dog.color || '-'} />
+            <DetailItem label={t('dogProfile.origin')} value={dog.origin} />
+            <DetailItem label={t('dogProfile.microchip')} value={dog.microchip_id || '-'} />
           </View>
         </Card.Content>
       </Card>
@@ -61,13 +65,13 @@ export default function DogProfileScreen({ route, navigation }) {
       {(dog.behavior_notes || dog.likes || dog.allergies) && (
         <Card style={styles.card}>
           <Card.Content>
-            <Text style={styles.sectionTitle}>Notas</Text>
+            <Text style={styles.sectionTitle}>{t('dogProfile.notes')}</Text>
             {dog.behavior_notes && (
-              <NoteItem label="Comportamiento" value={dog.behavior_notes} />
+              <NoteItem label={t('dogProfile.behaviorLabel')} value={dog.behavior_notes} />
             )}
-            {dog.likes && <NoteItem label="Le gusta" value={dog.likes} />}
+            {dog.likes && <NoteItem label={t('dogProfile.likesLabel')} value={dog.likes} />}
             {dog.allergies && (
-              <NoteItem label="Alergias" value={dog.allergies} icon="alert" />
+              <NoteItem label={t('dogProfile.allergiesLabel')} value={dog.allergies} icon="alert" />
             )}
           </Card.Content>
         </Card>
@@ -81,7 +85,7 @@ export default function DogProfileScreen({ route, navigation }) {
           onPress={() => navigation.navigate('Vaccines', { dogId: dog.id, dogName: dog.name })}
           style={styles.actionButton}
         >
-          Vacunas
+          {t('dogProfile.vaccines')}
         </Button>
 
         <Button
@@ -90,12 +94,12 @@ export default function DogProfileScreen({ route, navigation }) {
           onPress={() => navigation.navigate('GenerateQR', { dog })}
           style={[styles.actionButton, { backgroundColor: COLORS.secondary }]}
         >
-          Código QR
+          {t('dogProfile.qrCode')}
         </Button>
       </View>
 
       <Text style={styles.footer}>
-        Registrado el {formatDate(dog.created_at)}
+        {t('dogProfile.registeredOn', { date: formatDate(dog.created_at) })}
       </Text>
     </ScrollView>
   );

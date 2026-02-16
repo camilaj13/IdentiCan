@@ -1,23 +1,26 @@
 import React from 'react';
 import { StyleSheet } from 'react-native';
 import { Card, Text, Chip } from 'react-native-paper';
+import { useTranslation } from '../i18n';
 import { COLORS } from '../constants/config';
 
 export default function DogCard({ dog, onPress }) {
+  const { t } = useTranslation();
+
   return (
     <Card style={styles.card} onPress={onPress}>
       <Card.Content style={styles.content}>
         <Text style={styles.name}>{dog.name}</Text>
-        <Text style={styles.breed}>{dog.breed || 'Sin raza'}</Text>
+        <Text style={styles.breed}>{dog.breed || t('dog.noBreed')}</Text>
 
         <Chip icon="qrcode" style={styles.chip} textStyle={styles.chipText}>
           {dog.qr_code}
         </Chip>
 
         <Text style={styles.details}>
-          {dog.sex === 'M' ? 'Macho' : 'Hembra'}
-          {dog.age_years ? ` · ${dog.age_years} años` : ''}
-          {dog.weight_kg ? ` · ${dog.weight_kg} kg` : ''}
+          {dog.sex === 'M' ? t('dog.male') : t('dog.female')}
+          {dog.age_years ? ` · ${dog.age_years} ${t('dog.years')}` : ''}
+          {dog.weight_kg ? ` · ${dog.weight_kg} ${t('dog.kg')}` : ''}
         </Text>
       </Card.Content>
     </Card>

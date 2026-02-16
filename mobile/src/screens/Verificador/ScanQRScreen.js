@@ -1,25 +1,23 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, Alert } from 'react-native';
 import { Text, Button, Card, TextInput } from 'react-native-paper';
+import { useTranslation } from '../../i18n';
 import client from '../../api/client';
 import { COLORS } from '../../constants/config';
 
 export default function ScanQRScreen({ navigation }) {
+  const { t } = useTranslation();
   const [qrCode, setQrCode] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // In a real implementation, this would use expo-barcode-scanner
-  // For now, we provide manual QR code entry as fallback
-
   const handleManualSearch = async () => {
     if (!qrCode.trim()) {
-      Alert.alert('Error', 'Ingresá un código QR');
+      Alert.alert(t('common.error'), t('scanQR.enterCode'));
       return;
     }
 
     setLoading(true);
     try {
-      // Search for the dog by QR code
       const response = await client.get('/api/dogs');
       const dogs = response.data;
       const found = dogs.find((d) => d.qr_code === qrCode.trim().toUpperCase());
@@ -32,7 +30,7 @@ export default function ScanQRScreen({ navigation }) {
             dog_id: found.id,
             dog_name: found.name,
             verification_type: 'qr_scan',
-            message: 'Perro encontrado por QR',
+            message: t('result.dogFoundByQR'),
           },
         });
       } else {
@@ -43,12 +41,12 @@ export default function ScanQRScreen({ navigation }) {
             dog_id: null,
             dog_name: null,
             verification_type: 'qr_scan',
-            message: 'No se encontró un perro con ese código QR',
+            message: t('result.dogNotFoundByQR'),
           },
         });
       }
     } catch {
-      Alert.alert('Error', 'No se pudo buscar el código QR');
+      Alert.alert(t('common.error'), t('scanQR.errorSearch'));
     } finally {
       setLoading(false);
     }
@@ -59,32 +57,25 @@ export default function ScanQRScreen({ navigation }) {
       <Card style={styles.card}>
         <Card.Content style={styles.cardContent}>
           <Text style={styles.icon}>📱</Text>
-          <Text style={styles.title}>Escanear Código QR</Text>
-          <Text style={styles.description}>
-            Escaneá el código QR del collar del perro para ver su información.
-          </Text>
+          <Text style={styles.title}>{t('scanQR.title')}</Text>
+          <Text style={styles.description}>{t('scanQR.description')}</Text>
         </Card.Content>
       </Card>
 
       <Button
         mode="contained"
         icon="camera"
-        onPress={() =>
-          Alert.alert(
-            'Cámara QR',
-            'La cámara QR estará disponible próximamente. Usá la búsqueda manual.',
-          )
-        }
+        onPress={() => Alert.alert(t('scanQR.cameraTitle'), t('scanQR.cameraMessage'))}
         style={styles.cameraButton}
         labelStyle={styles.cameraButtonLabel}
       >
-        Abrir Cámara QR
+        {t('scanQR.openCamera')}
       </Button>
 
-      <Text style={styles.orText}>o ingresá el código manualmente</Text>
+      <Text style={styles.orText}>{t('scanQR.manualEntry')}</Text>
 
       <TextInput
-        label="Código QR (ej: IDC-DOG-00001)"
+        label={t('scanQR.qrPlaceholder')}
         value={qrCode}
         onChangeText={setQrCode}
         mode="outlined"
@@ -99,7 +90,7 @@ export default function ScanQRScreen({ navigation }) {
         disabled={loading}
         style={styles.searchButton}
       >
-        Buscar
+        {t('common.search')}
       </Button>
     </View>
   );

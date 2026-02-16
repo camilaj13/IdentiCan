@@ -17,11 +17,13 @@ import {
 } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import VaccineCard from '../../components/VaccineCard';
+import { useTranslation } from '../../i18n';
 import client from '../../api/client';
 import { COLORS } from '../../constants/config';
 
 export default function VaccinesScreen({ route }) {
   const { dogId, dogName } = route.params;
+  const { t } = useTranslation();
   const [vaccines, setVaccines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -40,7 +42,7 @@ export default function VaccinesScreen({ route }) {
       const response = await client.get(`/api/vaccines/dog/${dogId}`);
       setVaccines(response.data);
     } catch {
-      Alert.alert('Error', 'No se pudieron cargar las vacunas');
+      Alert.alert(t('common.error'), t('vaccines.errorLoading'));
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -55,14 +57,13 @@ export default function VaccinesScreen({ route }) {
 
   const handleAddVaccine = async () => {
     if (!vaccineType.trim() || !vaccineDate.trim()) {
-      Alert.alert('Error', 'Completá el tipo de vacuna y la fecha');
+      Alert.alert(t('common.error'), t('vaccines.fillRequired'));
       return;
     }
 
-    // Simple date validation (YYYY-MM-DD)
     const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
     if (!dateRegex.test(vaccineDate)) {
-      Alert.alert('Error', 'Formato de fecha: AAAA-MM-DD');
+      Alert.alert(t('common.error'), t('vaccines.dateFormat'));
       return;
     }
 
@@ -80,24 +81,24 @@ export default function VaccinesScreen({ route }) {
       resetForm();
       fetchVaccines();
     } catch (err) {
-      Alert.alert('Error', err.response?.data?.detail || 'Error al guardar');
+      Alert.alert(t('common.error'), err.response?.data?.detail || t('vaccines.errorSaving'));
     } finally {
       setSaving(false);
     }
   };
 
   const handleDelete = async (vaccineId) => {
-    Alert.alert('Eliminar vacuna', '¿Estás seguro?', [
-      { text: 'Cancelar', style: 'cancel' },
+    Alert.alert(t('vaccines.deleteTitle'), t('vaccines.deleteConfirm'), [
+      { text: t('common.cancel'), style: 'cancel' },
       {
-        text: 'Eliminar',
+        text: t('common.delete'),
         style: 'destructive',
         onPress: async () => {
           try {
             await client.delete(`/api/vaccines/${vaccineId}`);
             fetchVaccines();
           } catch {
-            Alert.alert('Error', 'No se pudo eliminar');
+            Alert.alert(t('common.error'), t('vaccines.errorDeleting'));
           }
         },
       },
@@ -122,12 +123,12 @@ export default function VaccinesScreen({ route }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Vacunas de {dogName}</Text>
+      <Text style={styles.title}>{t('vaccines.title', { name: dogName })}</Text>
 
       {vaccines.length === 0 ? (
         <View style={styles.emptyState}>
           <Text style={styles.emptyIcon}>💉</Text>
-          <Text style={styles.emptyText}>No hay vacunas registradas</Text>
+          <Text style={styles.emptyText}>{t('vaccines.noVaccines')}</Text>
         </View>
       ) : (
         <FlatList
@@ -163,28 +164,28 @@ export default function VaccinesScreen({ route }) {
           onDismiss={() => setModalVisible(false)}
           contentContainerStyle={styles.modal}
         >
-          <Text style={styles.modalTitle}>Agregar Vacuna</Text>
+          <Text style={styles.modalTitle}>{t('vaccines.addVaccine')}</Text>
 
           <TextInput
-            label="Tipo de vacuna *"
+            label={`${t('vaccines.vaccineType')} *`}
             value={vaccineType}
             onChangeText={setVaccineType}
             mode="outlined"
             style={styles.input}
-            placeholder="Ej: Antirrábica, Séxtuple"
+            placeholder={t('vaccines.vaccineTypePlaceholder')}
           />
 
           <TextInput
-            label="Fecha (AAAA-MM-DD) *"
+            label={`${t('vaccines.date')} *`}
             value={vaccineDate}
             onChangeText={setVaccineDate}
             mode="outlined"
             style={styles.input}
-            placeholder="2024-01-15"
+            placeholder={t('vaccines.datePlaceholder')}
           />
 
           <TextInput
-            label="Veterinario"
+            label={t('vaccines.vet')}
             value={vetName}
             onChangeText={setVetName}
             mode="outlined"
@@ -192,7 +193,7 @@ export default function VaccinesScreen({ route }) {
           />
 
           <TextInput
-            label="Clínica"
+            label={t('vaccines.clinic')}
             value={clinicName}
             onChangeText={setClinicName}
             mode="outlined"
@@ -200,7 +201,7 @@ export default function VaccinesScreen({ route }) {
           />
 
           <TextInput
-            label="Notas"
+            label={t('vaccines.notes')}
             value={notes}
             onChangeText={setNotes}
             mode="outlined"
@@ -210,10 +211,10 @@ export default function VaccinesScreen({ route }) {
 
           <View style={styles.modalActions}>
             <Button mode="text" onPress={() => setModalVisible(false)}>
-              Cancelar
+              {t('common.cancel')}
             </Button>
             <Button mode="contained" onPress={handleAddVaccine} loading={saving}>
-              Guardar
+              {t('common.save')}
             </Button>
           </View>
         </Modal>

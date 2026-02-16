@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { View, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
 import { TextInput, Button, Text, HelperText } from 'react-native-paper';
 import { useAuth } from '../../context/AuthContext';
+import { useTranslation } from '../../i18n';
 import { COLORS, APP_NAME } from '../../constants/config';
+import LanguageSelector from '../../components/LanguageSelector';
 
 export default function LoginScreen({ navigation }) {
   const { login, error, setError } = useAuth();
+  const { t } = useTranslation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -13,7 +16,7 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
-      setError('Completá todos los campos');
+      setError(t('auth.fillAllFields'));
       return;
     }
     setLoading(true);
@@ -27,15 +30,17 @@ export default function LoginScreen({ navigation }) {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+        <LanguageSelector style={styles.langSelector} />
+
         <View style={styles.header}>
           <Text style={styles.logo}>🐕</Text>
           <Text style={styles.title}>{APP_NAME}</Text>
-          <Text style={styles.subtitle}>Identificación biométrica canina</Text>
+          <Text style={styles.subtitle}>{t('auth.subtitle')}</Text>
         </View>
 
         <View style={styles.form}>
           <TextInput
-            label="Email"
+            label={t('auth.email')}
             value={email}
             onChangeText={setEmail}
             mode="outlined"
@@ -46,7 +51,7 @@ export default function LoginScreen({ navigation }) {
           />
 
           <TextInput
-            label="Contraseña"
+            label={t('auth.password')}
             value={password}
             onChangeText={setPassword}
             mode="outlined"
@@ -74,7 +79,7 @@ export default function LoginScreen({ navigation }) {
             style={styles.button}
             labelStyle={styles.buttonLabel}
           >
-            Iniciar Sesión
+            {t('auth.login')}
           </Button>
 
           <Button
@@ -85,7 +90,7 @@ export default function LoginScreen({ navigation }) {
             }}
             style={styles.linkButton}
           >
-            ¿No tenés cuenta? Registrate
+            {t('auth.noAccount')}
           </Button>
         </View>
       </ScrollView>
@@ -102,6 +107,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: 'center',
     padding: 24,
+  },
+  langSelector: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
   },
   header: {
     alignItems: 'center',

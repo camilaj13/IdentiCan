@@ -2,11 +2,13 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from '../screens/Auth/LoginScreen';
 import RegisterScreen from '../screens/Auth/RegisterScreen';
+import { useTranslation } from '../i18n';
 import { COLORS } from '../constants/config';
 
 const Stack = createStackNavigator();
 
 export default function AuthNavigator() {
+  const { t } = useTranslation();
   return (
     <Stack.Navigator
       screenOptions={{
@@ -23,7 +25,7 @@ export default function AuthNavigator() {
       <Stack.Screen
         name="Register"
         component={RegisterScreen}
-        options={{ title: 'Crear Cuenta' }}
+        options={{ title: t('nav.createAccount') }}
       />
     </Stack.Navigator>
   );

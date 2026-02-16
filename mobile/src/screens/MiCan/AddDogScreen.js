@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { TextInput, Button, SegmentedButtons, Text, HelperText } from 'react-native-paper';
+import { useTranslation } from '../../i18n';
 import client from '../../api/client';
 import { COLORS } from '../../constants/config';
 
-const ORIGIN_OPTIONS = [
-  { value: 'adopted', label: 'Adoptado' },
-  { value: 'purchased', label: 'Comprado' },
-  { value: 'rescued', label: 'Rescatado' },
-  { value: 'other', label: 'Otro' },
-];
-
 export default function AddDogScreen({ navigation }) {
+  const { t } = useTranslation();
   const [name, setName] = useState('');
   const [breed, setBreed] = useState('');
   const [sex, setSex] = useState('M');
@@ -26,9 +21,16 @@ export default function AddDogScreen({ navigation }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const originOptions = [
+    { value: 'adopted', label: t('addDog.adopted') },
+    { value: 'purchased', label: t('addDog.purchased') },
+    { value: 'rescued', label: t('addDog.rescued') },
+    { value: 'other', label: t('addDog.other') },
+  ];
+
   const handleSubmit = async () => {
     if (!name.trim()) {
-      setError('El nombre es obligatorio');
+      setError(t('addDog.nameRequired'));
       return;
     }
 
@@ -50,11 +52,11 @@ export default function AddDogScreen({ navigation }) {
       };
 
       await client.post('/api/dogs', data);
-      Alert.alert('Listo', `${name} fue registrado correctamente`, [
-        { text: 'OK', onPress: () => navigation.goBack() },
+      Alert.alert(t('addDog.success'), t('addDog.successMessage', { name }), [
+        { text: t('common.ok'), onPress: () => navigation.goBack() },
       ]);
     } catch (err) {
-      setError(err.response?.data?.detail || 'Error al registrar el perro');
+      setError(err.response?.data?.detail || t('addDog.errorRegistering'));
     } finally {
       setLoading(false);
     }
@@ -62,10 +64,10 @@ export default function AddDogScreen({ navigation }) {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.sectionTitle}>Datos básicos</Text>
+      <Text style={styles.sectionTitle}>{t('addDog.basicInfo')}</Text>
 
       <TextInput
-        label="Nombre del perro *"
+        label={`${t('addDog.dogName')} *`}
         value={name}
         onChangeText={setName}
         mode="outlined"
@@ -73,35 +75,35 @@ export default function AddDogScreen({ navigation }) {
       />
 
       <TextInput
-        label="Raza"
+        label={t('addDog.breed')}
         value={breed}
         onChangeText={setBreed}
         mode="outlined"
         style={styles.input}
       />
 
-      <Text style={styles.label}>Sexo</Text>
+      <Text style={styles.label}>{t('addDog.sex')}</Text>
       <SegmentedButtons
         value={sex}
         onValueChange={setSex}
         buttons={[
-          { value: 'M', label: 'Macho' },
-          { value: 'F', label: 'Hembra' },
+          { value: 'M', label: t('dog.male') },
+          { value: 'F', label: t('dog.female') },
         ]}
         style={styles.segmented}
       />
 
-      <Text style={styles.label}>Origen</Text>
+      <Text style={styles.label}>{t('addDog.origin')}</Text>
       <SegmentedButtons
         value={origin}
         onValueChange={setOrigin}
-        buttons={ORIGIN_OPTIONS}
+        buttons={originOptions}
         style={styles.segmented}
       />
 
       <View style={styles.row}>
         <TextInput
-          label="Edad (años)"
+          label={t('addDog.age')}
           value={ageYears}
           onChangeText={setAgeYears}
           mode="outlined"
@@ -109,7 +111,7 @@ export default function AddDogScreen({ navigation }) {
           style={[styles.input, styles.halfInput]}
         />
         <TextInput
-          label="Peso (kg)"
+          label={t('addDog.weight')}
           value={weightKg}
           onChangeText={setWeightKg}
           mode="outlined"
@@ -119,7 +121,7 @@ export default function AddDogScreen({ navigation }) {
       </View>
 
       <TextInput
-        label="Color"
+        label={t('addDog.color')}
         value={color}
         onChangeText={setColor}
         mode="outlined"
@@ -127,17 +129,17 @@ export default function AddDogScreen({ navigation }) {
       />
 
       <TextInput
-        label="ID Microchip"
+        label={t('addDog.microchip')}
         value={microchipId}
         onChangeText={setMicrochipId}
         mode="outlined"
         style={styles.input}
       />
 
-      <Text style={styles.sectionTitle}>Información adicional</Text>
+      <Text style={styles.sectionTitle}>{t('addDog.additionalInfo')}</Text>
 
       <TextInput
-        label="Comportamiento"
+        label={t('addDog.behavior')}
         value={behaviorNotes}
         onChangeText={setBehaviorNotes}
         mode="outlined"
@@ -147,7 +149,7 @@ export default function AddDogScreen({ navigation }) {
       />
 
       <TextInput
-        label="Le gusta..."
+        label={t('addDog.likes')}
         value={likes}
         onChangeText={setLikes}
         mode="outlined"
@@ -157,7 +159,7 @@ export default function AddDogScreen({ navigation }) {
       />
 
       <TextInput
-        label="Alergias"
+        label={t('addDog.allergies')}
         value={allergies}
         onChangeText={setAllergies}
         mode="outlined"
@@ -180,7 +182,7 @@ export default function AddDogScreen({ navigation }) {
         style={styles.button}
         labelStyle={styles.buttonLabel}
       >
-        Registrar Perro
+        {t('addDog.registerDog')}
       </Button>
     </ScrollView>
   );

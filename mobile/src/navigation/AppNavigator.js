@@ -4,7 +4,9 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { ActivityIndicator, View } from 'react-native';
 import { useAuth } from '../context/AuthContext';
+import { useTranslation } from '../i18n';
 import { COLORS } from '../constants/config';
+import { LanguageSelectorHeader } from '../components/LanguageSelector';
 
 import AuthNavigator from './AuthNavigator';
 import HomeScreen from '../screens/MiCan/HomeScreen';
@@ -20,40 +22,45 @@ const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 function MiCanStack() {
+  const { t } = useTranslation();
   return (
     <Stack.Navigator
       screenOptions={{
         headerStyle: { backgroundColor: COLORS.primary },
         headerTintColor: '#fff',
         headerTitleStyle: { fontWeight: 'bold' },
+        headerRight: () => <LanguageSelectorHeader />,
       }}
     >
-      <Stack.Screen name="Home" component={HomeScreen} options={{ title: 'Mis Perros' }} />
-      <Stack.Screen name="AddDog" component={AddDogScreen} options={{ title: 'Agregar Perro' }} />
-      <Stack.Screen name="DogProfile" component={DogProfileScreen} options={{ title: 'Perfil' }} />
-      <Stack.Screen name="Vaccines" component={VaccinesScreen} options={{ title: 'Vacunas' }} />
-      <Stack.Screen name="GenerateQR" component={GenerateQRScreen} options={{ title: 'Código QR' }} />
+      <Stack.Screen name="Home" component={HomeScreen} options={{ title: t('nav.myDogs') }} />
+      <Stack.Screen name="AddDog" component={AddDogScreen} options={{ title: t('nav.addDog') }} />
+      <Stack.Screen name="DogProfile" component={DogProfileScreen} options={{ title: t('nav.profile') }} />
+      <Stack.Screen name="Vaccines" component={VaccinesScreen} options={{ title: t('nav.vaccines') }} />
+      <Stack.Screen name="GenerateQR" component={GenerateQRScreen} options={{ title: t('nav.qrCode') }} />
     </Stack.Navigator>
   );
 }
 
 function VerificadorStack() {
+  const { t } = useTranslation();
   return (
     <Stack.Navigator
       screenOptions={{
         headerStyle: { backgroundColor: COLORS.primary },
         headerTintColor: '#fff',
         headerTitleStyle: { fontWeight: 'bold' },
+        headerRight: () => <LanguageSelectorHeader />,
       }}
     >
-      <Stack.Screen name="ScanNose" component={ScanNoseScreen} options={{ title: 'Escanear Nariz' }} />
-      <Stack.Screen name="ScanQR" component={ScanQRScreen} options={{ title: 'Escanear QR' }} />
-      <Stack.Screen name="Result" component={ResultScreen} options={{ title: 'Resultado' }} />
+      <Stack.Screen name="ScanNose" component={ScanNoseScreen} options={{ title: t('nav.scanNose') }} />
+      <Stack.Screen name="ScanQR" component={ScanQRScreen} options={{ title: t('nav.scanQR') }} />
+      <Stack.Screen name="Result" component={ResultScreen} options={{ title: t('nav.result') }} />
     </Stack.Navigator>
   );
 }
 
 function MainTabs() {
+  const { t } = useTranslation();
   return (
     <Tab.Navigator
       screenOptions={{
@@ -68,15 +75,15 @@ function MainTabs() {
         name="MiCan"
         component={MiCanStack}
         options={{
-          tabBarLabel: 'Mi Can',
-          tabBarIcon: ({ color, size }) => null, // Icons handled by react-native-vector-icons
+          tabBarLabel: t('nav.myCan'),
+          tabBarIcon: ({ color, size }) => null,
         }}
       />
       <Tab.Screen
         name="Verificador"
         component={VerificadorStack}
         options={{
-          tabBarLabel: 'Verificar',
+          tabBarLabel: t('nav.verify'),
           tabBarIcon: ({ color, size }) => null,
         }}
       />

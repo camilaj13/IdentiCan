@@ -4,11 +4,13 @@ import { FAB, Text, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { useFocusEffect } from '@react-navigation/native';
 import DogCard from '../../components/DogCard';
 import { useAuth } from '../../context/AuthContext';
+import { useTranslation } from '../../i18n';
 import client from '../../api/client';
 import { COLORS } from '../../constants/config';
 
 export default function HomeScreen({ navigation }) {
   const { user, logout } = useAuth();
+  const { t } = useTranslation();
   const [dogs, setDogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -20,7 +22,7 @@ export default function HomeScreen({ navigation }) {
       setDogs(response.data);
       setError(null);
     } catch (err) {
-      setError('Error al cargar los perros');
+      setError(t('home.errorLoading'));
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -49,19 +51,21 @@ export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.greeting}>Hola, {user?.name || 'Usuario'}</Text>
+        <Text style={styles.greeting}>
+          {t('home.greeting', { name: user?.name || 'User' })}
+        </Text>
         <Text style={styles.dogCount}>
-          {dogs.length} {dogs.length === 1 ? 'perro registrado' : 'perros registrados'}
+          {dogs.length === 1
+            ? t('home.dogCountOne')
+            : t('home.dogCountOther', { count: dogs.length })}
         </Text>
       </View>
 
       {dogs.length === 0 ? (
         <View style={styles.emptyState}>
           <Text style={styles.emptyIcon}>🐾</Text>
-          <Text style={styles.emptyTitle}>No tenés perros registrados</Text>
-          <Text style={styles.emptySubtitle}>
-            Tocá el botón + para agregar tu primer perro
-          </Text>
+          <Text style={styles.emptyTitle}>{t('home.noDogs')}</Text>
+          <Text style={styles.emptySubtitle}>{t('home.noDogsHint')}</Text>
         </View>
       ) : (
         <FlatList

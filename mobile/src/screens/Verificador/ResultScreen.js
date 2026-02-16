@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { Text, Card, Button, Divider } from 'react-native-paper';
+import { useTranslation } from '../../i18n';
 import { COLORS } from '../../constants/config';
 
 export default function ResultScreen({ route, navigation }) {
   const { result } = route.params;
+  const { t } = useTranslation();
   const isMatch = result.match;
 
   return (
@@ -13,7 +15,7 @@ export default function ResultScreen({ route, navigation }) {
         <Card.Content style={styles.cardContent}>
           <Text style={styles.icon}>{isMatch ? '✅' : '❌'}</Text>
           <Text style={styles.title}>
-            {isMatch ? 'Coincidencia Encontrada' : 'Sin Coincidencia'}
+            {isMatch ? t('result.matchFound') : t('result.noMatch')}
           </Text>
           <Text style={styles.message}>{result.message}</Text>
         </Card.Content>
@@ -22,14 +24,14 @@ export default function ResultScreen({ route, navigation }) {
       {isMatch && result.dog_name && (
         <Card style={styles.detailCard}>
           <Card.Content>
-            <Text style={styles.sectionTitle}>Datos del Perro</Text>
+            <Text style={styles.sectionTitle}>{t('result.dogData')}</Text>
             <Divider style={styles.divider} />
 
-            <DetailRow label="Nombre" value={result.dog_name} />
-            <DetailRow label="ID" value={result.dog_id?.toString()} />
+            <DetailRow label={t('result.name')} value={result.dog_name} />
+            <DetailRow label={t('result.id')} value={result.dog_id?.toString()} />
             {result.confidence && (
               <DetailRow
-                label="Confianza"
+                label={t('result.confidence')}
                 value={`${(result.confidence * 100).toFixed(1)}%`}
               />
             )}
@@ -40,11 +42,11 @@ export default function ResultScreen({ route, navigation }) {
       {result.verification_usage && (
         <Card style={styles.usageCard}>
           <Card.Content>
-            <Text style={styles.usageTitle}>Uso del día</Text>
+            <Text style={styles.usageTitle}>{t('result.dailyUsage')}</Text>
             <Text style={styles.usageText}>
               {result.verification_usage.remaining !== null
-                ? `Te quedan ${result.verification_usage.remaining} verificaciones hoy`
-                : 'Verificaciones ilimitadas'}
+                ? t('result.remainingVerifications', { count: result.verification_usage.remaining })
+                : t('result.unlimitedVerifications')}
             </Text>
           </Card.Content>
         </Card>
@@ -56,14 +58,14 @@ export default function ResultScreen({ route, navigation }) {
           onPress={() => navigation.navigate('ScanNose')}
           style={styles.button}
         >
-          Nueva Verificación
+          {t('result.newVerification')}
         </Button>
         <Button
           mode="outlined"
           onPress={() => navigation.goBack()}
           style={styles.button}
         >
-          Volver
+          {t('common.back')}
         </Button>
       </View>
     </View>
