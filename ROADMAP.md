@@ -1,18 +1,19 @@
 # Roadmap - IdentiCan
 
-## Fase 1 - MVP (Actual)
+## Phase 1 - MVP (Current)
 
-- [x] Backend API completo (FastAPI)
-- [x] Auth con JWT
-- [x] CRUD de perros
-- [x] Registro de vacunas
-- [x] Generación de QR (PNG + PDF)
-- [x] Límite 3 verificaciones/día
-- [x] App móvil funcional (React Native + Expo)
-- [x] CI/CD configurado
+- [x] Complete backend API (FastAPI)
+- [x] JWT authentication
+- [x] Dog CRUD operations
+- [x] Vaccine records
+- [x] QR code generation (PNG + PDF)
+- [x] 3 verifications/day limit
+- [x] Functional mobile app (React Native + Expo)
+- [x] CI/CD configured
+- [x] Multilanguage support (English, Spanish, Portuguese)
 
-- [ ] Integrar modelo Pet-ReID-IMAG con el backend
-- [ ] Captura de nariz en la app (expo-camera)
-- [ ] Extracción de embeddings en tiempo real
-- [ ] Matching real de nariz canina
-- [ ] Mejora de precisión del modelo
+- [ ] Integrate Pet-ReID-IMAG model with the backend
+- [ ] Nose capture in the app (expo-camera)
+- [ ] Real-time embedding extraction
+- [ ] Real canine nose matching
+- [ ] Model accuracy improvements

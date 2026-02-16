@@ -10,7 +10,7 @@ from app.models.dog import Dog
 from app.models.user import User
 from app.schemas.dog import DogCreate, DogResponse, DogUpdate
 
-router = APIRouter(prefix="/api/dogs", tags=["Perros"])
+router = APIRouter(prefix="/api/dogs", tags=["Dogs"])
 
 
 def _generate_qr_code(dog_id: int) -> str:
@@ -25,7 +25,7 @@ def create_dog(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Registrar un nuevo perro."""
+    """Register a new dog."""
     dog = Dog(
         owner_id=current_user.id,
         qr_code="TEMP",  # Placeholder, updated after commit
@@ -49,7 +49,7 @@ def list_dogs(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Listar los perros del usuario autenticado."""
+    """List dogs for the authenticated user."""
     dogs = db.query(Dog).filter(Dog.owner_id == current_user.id).all()
     return [DogResponse.model_validate(d) for d in dogs]
 
@@ -61,7 +61,7 @@ def get_dog(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Obtener un perro por ID."""
+    """Get a dog by ID."""
     lang = get_language(request)
     dog = db.query(Dog).filter(Dog.id == dog_id).first()
     if not dog:
@@ -80,7 +80,7 @@ def update_dog(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Actualizar datos de un perro (solo el dueño)."""
+    """Update dog data (owner only)."""
     lang = get_language(request)
     dog = db.query(Dog).filter(Dog.id == dog_id).first()
     if not dog:
@@ -104,7 +104,7 @@ def delete_dog(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Eliminar un perro (solo el dueño)."""
+    """Delete a dog (owner only)."""
     lang = get_language(request)
     dog = db.query(Dog).filter(Dog.id == dog_id).first()
     if not dog:

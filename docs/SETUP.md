@@ -1,6 +1,6 @@
-# Guía de Instalación - IdentiCan
+# Setup Guide - IdentiCan
 
-## Requisitos Previos
+## Prerequisites
 
 ### Backend
 - Python 3.11+
@@ -9,21 +9,21 @@
 
 ### Mobile
 - Node.js 18+
-- npm o yarn
-- Expo Go (app en celular)
+- npm or yarn
+- Expo Go (app on your phone)
 
 ---
 
 ## Backend
 
-### 1. Clonar y navegar
+### 1. Clone and navigate
 
 ```bash
 git clone https://github.com/camilaj13/IdentiCan.git
 cd IdentiCan/backend
 ```
 
-### 2. Entorno virtual
+### 2. Virtual environment
 
 ```bash
 python -m venv venv
@@ -31,71 +31,71 @@ source venv/bin/activate  # Linux/Mac
 # venv\Scripts\activate   # Windows
 ```
 
-### 3. Instalar dependencias
+### 3. Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 4. Configurar variables de entorno
+### 4. Configure environment variables
 
 ```bash
 cp .env.example .env
 ```
 
-Editar `.env` con tus valores reales:
-- `DATABASE_URL`: URL de tu base PostgreSQL
-- `SECRET_KEY`: Clave secreta única
-- `JWT_SECRET`: Clave JWT única
+Edit `.env` with your actual values:
+- `DATABASE_URL`: Your PostgreSQL URL
+- `SECRET_KEY`: Unique secret key
+- `JWT_SECRET`: Unique JWT key
 
-### 5. Crear la base de datos
+### 5. Create the database
 
 ```bash
-# En PostgreSQL
+# In PostgreSQL
 createdb identican
 ```
 
-Las tablas se crean automáticamente al iniciar la app.
+Tables are created automatically when the app starts.
 
-### 6. Ejecutar
+### 6. Run
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-Abrir `http://localhost:8000/docs` para ver la documentación interactiva.
+Open `http://localhost:8000/docs` to view the interactive documentation.
 
 ---
 
 ## Mobile
 
-### 1. Navegar al proyecto
+### 1. Navigate to the project
 
 ```bash
 cd IdentiCan/mobile
 ```
 
-### 2. Instalar dependencias
+### 2. Install dependencies
 
 ```bash
 npm install
 ```
 
-### 3. Configurar API URL
+### 3. Configure API URL
 
-Editar `src/constants/config.js` si el backend corre en otra dirección.
+Edit `src/constants/config.js` if the backend runs at a different address.
 
-### 4. Ejecutar
+### 4. Run
 
 ```bash
 npx expo start
 ```
 
-Escanear el QR con la app Expo Go en tu celular.
+Scan the QR code with the Expo Go app on your phone.
 
 ---
 
-## Desarrollo con Docker (Backend)
+## Development with Docker (Backend)
 
 ```bash
 cd backend

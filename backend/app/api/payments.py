@@ -1,5 +1,5 @@
 """
-Payments API - Placeholder for Mercado Pago integration (FASE 2).
+Payments API - Placeholder for Mercado Pago integration (Phase 2).
 
 This module provides the endpoint structure for future payment processing.
 Currently returns informational responses only.
@@ -11,12 +11,12 @@ from app.core.security import get_current_user
 from app.i18n import get_language, t
 from app.models.user import User
 
-router = APIRouter(prefix="/api/payments", tags=["Pagos (Fase 2)"])
+router = APIRouter(prefix="/api/payments", tags=["Payments (Phase 2)"])
 
 
 @router.get("/plans")
 def get_plans(request: Request, current_user: User = Depends(get_current_user)):
-    """Obtener los planes disponibles."""
+    """Get available plans."""
     lang = get_language(request)
     return {
         "plans": [
@@ -53,7 +53,7 @@ def get_plans(request: Request, current_user: User = Depends(get_current_user)):
 
 @router.post("/checkout")
 def create_checkout(request: Request, current_user: User = Depends(get_current_user)):
-    """Crear sesión de pago (placeholder)."""
+    """Create payment session (placeholder)."""
     lang = get_language(request)
     return {
         "message": t("mercadopago_coming_soon", lang),

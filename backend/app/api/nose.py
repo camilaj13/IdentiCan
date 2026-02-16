@@ -14,7 +14,7 @@ from app.models.user import User
 from app.models.verification_log import VerificationLog
 from app.utils.storage import upload_image
 
-router = APIRouter(prefix="/api/nose", tags=["Nariz / Biometría"])
+router = APIRouter(prefix="/api/nose", tags=["Nose / Biometrics"])
 
 
 def _check_verification_limit(user: User, db: Session, lang: str = "es") -> dict:

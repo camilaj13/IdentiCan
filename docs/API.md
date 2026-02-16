@@ -1,29 +1,29 @@
-# Documentación de la API - IdentiCan
+# API Documentation - IdentiCan
 
 Base URL: `http://localhost:8000`
 
-Documentación interactiva: `http://localhost:8000/docs`
+Interactive documentation: `http://localhost:8000/docs`
 
 ---
 
-## Autenticación
+## Authentication
 
-Todos los endpoints protegidos requieren el header:
+All protected endpoints require the header:
 ```
 Authorization: Bearer <token>
 ```
 
 ### POST /api/auth/register
 
-Registrar un nuevo usuario.
+Register a new user.
 
 **Body:**
 ```json
 {
-  "email": "usuario@ejemplo.com",
-  "password": "mipassword123",
-  "name": "Juan Pérez",
-  "phone": "+5491112345678"
+  "email": "user@example.com",
+  "password": "mypassword123",
+  "name": "John Smith",
+  "phone": "+1234567890"
 }
 ```
 
@@ -34,8 +34,8 @@ Registrar un nuevo usuario.
   "token_type": "bearer",
   "user": {
     "id": 1,
-    "email": "usuario@ejemplo.com",
-    "name": "Juan Pérez",
+    "email": "user@example.com",
+    "name": "John Smith",
     "role": "user",
     "is_premium": false
   }
@@ -47,72 +47,72 @@ Registrar un nuevo usuario.
 **Body:**
 ```json
 {
-  "email": "usuario@ejemplo.com",
-  "password": "mipassword123"
+  "email": "user@example.com",
+  "password": "mypassword123"
 }
 ```
 
 ### GET /api/auth/me
 
-Obtener datos del usuario autenticado. Requiere token.
+Get authenticated user data. Requires token.
 
 ---
 
-## Perros
+## Dogs
 
 ### POST /api/dogs
 
-Registrar un nuevo perro. Requiere token.
+Register a new dog. Requires token.
 
 **Body:**
 ```json
 {
-  "name": "Firulais",
+  "name": "Buddy",
   "breed": "Labrador",
   "sex": "M",
   "origin": "adopted",
   "age_years": 3,
   "weight_kg": 25.5,
-  "color": "dorado"
+  "color": "golden"
 }
 ```
 
 ### GET /api/dogs
 
-Listar perros del usuario. Requiere token.
+List user's dogs. Requires token.
 
 ### GET /api/dogs/{id}
 
-Obtener un perro por ID. Requiere token.
+Get a dog by ID. Requires token.
 
 ### PUT /api/dogs/{id}
 
-Actualizar un perro (solo dueño). Requiere token.
+Update a dog (owner only). Requires token.
 
 ### DELETE /api/dogs/{id}
 
-Eliminar un perro (solo dueño). Requiere token.
+Delete a dog (owner only). Requires token.
 
 ---
 
-## Nariz / Biometría
+## Nose / Biometrics
 
 ### POST /api/nose/upload
 
-Subir imágenes de la nariz de un perro.
+Upload nose images for a dog.
 
 **Form Data:**
-- `dog_id`: ID del perro
-- `files`: Hasta 3 archivos de imagen
+- `dog_id`: Dog ID
+- `files`: Up to 3 image files
 
 ### POST /api/nose/verify
 
-Verificar un perro por escaneo de nariz.
+Verify a dog by nose scan.
 
-**Límite:** 3 verificaciones/día para usuarios gratuitos.
+**Limit:** 3 verifications/day for free users.
 
 **Form Data:**
-- `file`: Imagen de la nariz
+- `file`: Nose image
 
 **Response (200):**
 ```json
@@ -120,7 +120,7 @@ Verificar un perro por escaneo de nariz.
   "match": true,
   "confidence": 0.92,
   "dog_id": 1,
-  "dog_name": "Firulais",
+  "dog_name": "Buddy",
   "verification_usage": {
     "limit": 3,
     "used": 1,
@@ -129,42 +129,42 @@ Verificar un perro por escaneo de nariz.
 }
 ```
 
-**Response (429) - Límite alcanzado:**
+**Response (429) - Limit reached:**
 ```json
 {
-  "error": "Límite diario alcanzado",
+  "error": "Daily limit reached",
   "verifications_used": 3,
   "verifications_limit": 3,
-  "message": "Upgrade a Premium para verificaciones ilimitadas"
+  "message": "Upgrade to Premium for unlimited verifications"
 }
 ```
 
 ---
 
-## Vacunas
+## Vaccines
 
 ### POST /api/vaccines
 
-Agregar una vacuna. Requiere token.
+Add a vaccine. Requires token.
 
 **Body:**
 ```json
 {
   "dog_id": 1,
-  "vaccine_type": "Antirrábica",
+  "vaccine_type": "Rabies",
   "vaccine_date": "2024-01-15",
-  "veterinarian_name": "Dr. García",
+  "veterinarian_name": "Dr. Smith",
   "clinic_name": "Vet Center"
 }
 ```
 
 ### GET /api/vaccines/dog/{dog_id}
 
-Listar vacunas de un perro. Requiere token.
+List vaccines for a dog. Requires token.
 
 ### DELETE /api/vaccines/{id}
 
-Eliminar una vacuna. Requiere token.
+Delete a vaccine. Requires token.
 
 ---
 
@@ -172,11 +172,11 @@ Eliminar una vacuna. Requiere token.
 
 ### GET /api/qr/generate/{dog_id}
 
-Generar QR en formato PNG. Requiere token.
+Generate QR as PNG. Requires token.
 
 ### GET /api/qr/pdf/{dog_id}
 
-Generar QR en formato PDF 3x3cm. Requiere token.
+Generate QR as 3x3cm PDF. Requires token.
 
 ---
 
@@ -184,41 +184,41 @@ Generar QR en formato PDF 3x3cm. Requiere token.
 
 ### GET /api/admin/users
 
-Listar todos los usuarios.
+List all users.
 
 ### GET /api/admin/dogs
 
-Listar todos los perros.
+List all dogs.
 
 ### POST /api/admin/users/{id}/premium
 
-Activar/desactivar Premium.
+Activate/deactivate Premium.
 
 ### GET /api/admin/stats
 
-Estadísticas generales.
+General statistics.
 
 ---
 
-## Pagos (Fase 2)
+## Payments (Phase 2)
 
 ### GET /api/payments/plans
 
-Ver planes disponibles.
+View available plans.
 
 ### POST /api/payments/checkout
 
-Crear sesión de pago (placeholder).
+Create payment session (placeholder).
 
 ---
 
-## Códigos de Error
+## Error Codes
 
-| Código | Significado |
-|--------|-------------|
-| 400 | Datos inválidos |
-| 401 | No autenticado |
-| 403 | Sin permisos |
-| 404 | No encontrado |
-| 429 | Límite de verificaciones alcanzado |
-| 500 | Error interno |
+| Code | Meaning |
+|------|---------|
+| 400 | Invalid data |
+| 401 | Not authenticated |
+| 403 | No permissions |
+| 404 | Not found |
+| 429 | Verification limit reached |
+| 500 | Internal error |

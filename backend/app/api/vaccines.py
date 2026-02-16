@@ -11,7 +11,7 @@ from app.models.user import User
 from app.models.vaccine import Vaccine
 from app.schemas.vaccine import VaccineCreate, VaccineResponse
 
-router = APIRouter(prefix="/api/vaccines", tags=["Vacunas"])
+router = APIRouter(prefix="/api/vaccines", tags=["Vaccines"])
 
 
 @router.post("", response_model=VaccineResponse, status_code=status.HTTP_201_CREATED)
@@ -21,7 +21,7 @@ def create_vaccine(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Registrar una vacuna para un perro."""
+    """Register a vaccine for a dog."""
     lang = get_language(request)
     dog = db.query(Dog).filter(Dog.id == data.dog_id).first()
     if not dog:
@@ -43,7 +43,7 @@ def list_vaccines(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Listar todas las vacunas de un perro."""
+    """List all vaccines for a dog."""
     lang = get_language(request)
     dog = db.query(Dog).filter(Dog.id == dog_id).first()
     if not dog:
@@ -67,7 +67,7 @@ def delete_vaccine(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Eliminar una vacuna."""
+    """Delete a vaccine."""
     lang = get_language(request)
     vaccine = db.query(Vaccine).filter(Vaccine.id == vaccine_id).first()
     if not vaccine:

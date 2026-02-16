@@ -1,6 +1,6 @@
-# Licencia Dual - IdentiCan
+# Dual License - IdentiCan
 
-## Código de la Aplicación (Backend + Mobile)
+## Application Code (Backend + Mobile)
 
 MIT License
 
@@ -26,11 +26,11 @@ SOFTWARE.
 
 ---
 
-## Modelo ML (ml_model/)
+## ML Model (ml_model/)
 
-El modelo de machine learning contenido en `ml_model/` es un fork de
-[Pet-ReID-IMAG](https://github.com/xxx/Pet-ReID-IMAG), solución del
-3er puesto en CVPR2022 Biometrics Workshop Pet Biometric Challenge.
+The machine learning model contained in `ml_model/` is a fork of
+[Pet-ReID-IMAG](https://github.com/xxx/Pet-ReID-IMAG), the 3rd place
+solution from the CVPR2022 Biometrics Workshop Pet Biometric Challenge.
 
-Ese código mantiene su licencia original. Consultá `ml_model/` para
-más detalles sobre su licencia y términos de uso.
+That code retains its original license. See `ml_model/` for more
+details on its license and terms of use.

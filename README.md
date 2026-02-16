@@ -1,27 +1,28 @@
 # IdentiCan
 
-Plataforma de identificación biométrica canina, mediante fotografía de narices. Registrá a tu perro, guardá sus vacunas y generá un QR único para identificarlo.
+Canine biometric identification platform using nose photography. Register your dog, track vaccines, and generate a unique QR code for identification.
 
 ## App Preview
 
 ![IdentiCan Mobile App UI](docs/screenshots/identican_ui_overview.png)
 
-## Características
+## Features
 
-- **Registro de perros** con datos completos (raza, peso, origen, etc.)
-- **Identificación biométrica** por huella nasal (basado en Pet-ReID-IMAG)
-- **Código QR único** por perro (PNG + PDF 3x3cm para collar)
-- **Registro de vacunas** con historial completo
-- **Roles**: usuario, verificador, admin
+- **Dog registration** with full details (breed, weight, origin, etc.)
+- **Biometric identification** via nose print (based on Pet-ReID-IMAG)
+- **Unique QR code** per dog (PNG + 3x3cm PDF for collar tag)
+- **Vaccine records** with complete history
+- **Roles**: user, verifier, admin
+- **Multilanguage**: English, Spanish, Portuguese
 
-## Estructura del Proyecto
+## Project Structure
 
 ```
 IdentiCan/
-├── backend/       # API REST (FastAPI + PostgreSQL)
-├── mobile/        # App móvil (React Native + Expo)
-├── ml_model/      # Modelo ML (Pet-ReID-IMAG)
-├── docs/          # Documentación
+├── backend/       # REST API (FastAPI + PostgreSQL)
+├── mobile/        # Mobile app (React Native + Expo)
+├── ml_model/      # ML model (Pet-ReID-IMAG)
+├── docs/          # Documentation
 └── .github/       # CI/CD workflows
 ```
 
@@ -33,11 +34,11 @@ IdentiCan/
 cd backend
 python -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
-cp .env.example .env  # Editar con tus valores
+cp .env.example .env  # Edit with your values
 uvicorn app.main:app --reload
 ```
 
-Documentación API: `http://localhost:8000/docs`
+API documentation: `http://localhost:8000/docs`
 
 ### Mobile
 
@@ -47,11 +48,11 @@ npm install
 npx expo start
 ```
 
-Escanear el QR con Expo Go.
+Scan the QR code with Expo Go.
 
-## Stack Tecnológico
+## Tech Stack
 
-| Componente | Tecnología |
+| Component | Technology |
 |-----------|------------|
 | Backend | FastAPI, SQLAlchemy, PostgreSQL |
 | Auth | JWT (python-jose), bcrypt |
@@ -60,19 +61,19 @@ Escanear el QR con Expo Go.
 | ML | Pet-ReID-IMAG (ResNeSt) |
 | Deploy | Railway (backend), EAS (mobile) |
 
-## Documentación
+## Documentation
 
-- [Instalación](docs/SETUP.md)
+- [Setup Guide](docs/SETUP.md)
 - [API Reference](docs/API.md)
 - [Deployment](docs/DEPLOYMENT.md)
-- [Arquitectura](docs/ARCHITECTURE.md)
+- [Architecture](docs/ARCHITECTURE.md)
 
-## Modelo ML
+## ML Model
 
-El directorio `ml_model/` contiene el modelo Pet-ReID-IMAG, solución del 3er puesto en CVPR2022 Biometrics Workshop Pet Biometric Challenge. Logra 91.7% de precisión en identificación de mascotas.
+The `ml_model/` directory contains the Pet-ReID-IMAG model, the 3rd place solution from the CVPR2022 Biometrics Workshop Pet Biometric Challenge. It achieves 91.7% accuracy in pet identification.
 
-## Licencia
+## License
 
-Código de la aplicación: MIT License. Ver [LICENSE.md](LICENSE.md).
+Application code: MIT License. See [LICENSE.md](LICENSE.md).
 
-El modelo ML mantiene su licencia original.
+The ML model retains its original license.

@@ -9,7 +9,7 @@ from app.models.dog import Dog
 from app.models.user import User
 from app.utils.qr_generator import generate_qr_pdf, generate_qr_png
 
-router = APIRouter(prefix="/api/qr", tags=["Código QR"])
+router = APIRouter(prefix="/api/qr", tags=["QR Code"])
 
 
 @router.get("/generate/{dog_id}")
@@ -19,7 +19,7 @@ def generate_qr(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Generar código QR en formato PNG para un perro."""
+    """Generate QR code as PNG for a dog."""
     lang = get_language(request)
     dog = db.query(Dog).filter(Dog.id == dog_id).first()
     if not dog:
@@ -42,7 +42,7 @@ def generate_qr_pdf_endpoint(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Generar código QR en formato PDF 3x3cm para un perro."""
+    """Generate QR code as 3x3cm PDF for a dog."""
     lang = get_language(request)
     dog = db.query(Dog).filter(Dog.id == dog_id).first()
     if not dog:

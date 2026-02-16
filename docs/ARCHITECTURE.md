@@ -1,16 +1,16 @@
-# Arquitectura - IdentiCan
+# Architecture - IdentiCan
 
-## Visión General
+## Overview
 
-IdentiCan es una plataforma de identificación biométrica canina compuesta por:
+IdentiCan is a canine biometric identification platform composed of:
 
 1. **Backend API** (FastAPI + PostgreSQL)
-2. **App Móvil** (React Native + Expo)
-3. **Modelo ML** (Pet-ReID-IMAG, para identificación por nariz)
+2. **Mobile App** (React Native + Expo)
+3. **ML Model** (Pet-ReID-IMAG, for nose identification)
 
 ```
 ┌─────────────────┐     ┌──────────────────┐     ┌──────────────┐
-│   App Móvil     │────▸│   Backend API    │────▸│  PostgreSQL  │
+│   Mobile App    │────▸│   Backend API    │────▸│  PostgreSQL  │
 │  React Native   │     │    FastAPI       │     │              │
 └─────────────────┘     └──────────────────┘     └──────────────┘
                                │
@@ -24,79 +24,79 @@ IdentiCan es una plataforma de identificación biométrica canina compuesta por:
 
 ## Backend
 
-### Estructura
+### Structure
 
 ```
 backend/app/
-├── api/          # Endpoints REST
+├── api/          # REST endpoints
 ├── core/         # Config, DB, Security
 ├── models/       # SQLAlchemy ORM
 ├── schemas/      # Pydantic validation
 └── utils/        # QR, Storage helpers
 ```
 
-### Flujo de Autenticación
+### Authentication Flow
 
-1. Usuario se registra/login → recibe JWT
-2. Cada request envía `Authorization: Bearer <token>`
-3. Middleware valida el token y extrae el usuario
-4. Decoradores de rol verifican permisos
+1. User registers/logs in → receives JWT
+2. Each request sends `Authorization: Bearer <token>`
+3. Middleware validates the token and extracts the user
+4. Role decorators verify permissions
 
-### Modelos de Datos
+### Data Models
 
-- **User**: Datos del usuario, rol, estado premium
-- **Dog**: Datos del perro, imágenes de nariz, QR, embedding
-- **Vaccine**: Registro de vacunas por perro
-- **VerificationLog**: Log de verificaciones para control de límites
+- **User**: User data, role, premium status
+- **Dog**: Dog data, nose images, QR, embedding
+- **Vaccine**: Vaccine records per dog
+- **VerificationLog**: Verification log for limit tracking
 
-### Límite de Verificaciones
+### Verification Limit
 
-Los usuarios gratuitos tienen 3 verificaciones por día.
-Se cuenta por `VerificationLog` con `date = today()`.
-Usuarios premium y admin no tienen límite.
+Free users have 3 verifications per day.
+Counted via `VerificationLog` with `date = today()`.
+Premium and admin users have no limit.
 
 ## Mobile
 
-### Navegación
+### Navigation
 
 ```
 App
-├── AuthNavigator (sin token)
+├── AuthNavigator (no token)
 │   ├── LoginScreen
 │   └── RegisterScreen
-└── MainTabs (con token)
-    ├── MiCan (Tab)
+└── MainTabs (with token)
+    ├── My Dogs (Tab)
     │   ├── HomeScreen
     │   ├── AddDogScreen
     │   ├── DogProfileScreen
     │   ├── VaccinesScreen
     │   └── GenerateQRScreen
-    └── Verificador (Tab)
+    └── Verifier (Tab)
         ├── ScanNoseScreen
         ├── ScanQRScreen
         └── ResultScreen
 ```
 
-### Estado Global
+### Global State
 
-- **AuthContext**: Token JWT, datos del usuario, login/logout
-- Las pantallas manejan su estado local con hooks
+- **AuthContext**: JWT token, user data, login/logout
+- Screens manage their own local state with hooks
 
-## Modelo ML
+## ML Model
 
-El directorio `ml_model/` contiene el modelo Pet-ReID-IMAG:
+The `ml_model/` directory contains the Pet-ReID-IMAG model:
 - Backbone: ResNeSt
-- Entrenado en escalas 224, 256, 288
-- Precisión: 91.7% (Phase A), 86.27% (Phase B)
+- Trained at scales 224, 256, 288
+- Accuracy: 91.7% (Phase A), 86.27% (Phase B)
 
-La integración con el backend se hará en una fase futura.
-Actualmente, la verificación de nariz retorna resultados mock.
+Integration with the backend will be done in a future phase.
+Currently, nose verification returns mock results.
 
-## Seguridad
+## Security
 
-- Passwords hasheados con bcrypt (rounds=12)
-- JWT con HS256, expiración 7 días
+- Passwords hashed with bcrypt (rounds=12)
+- JWT with HS256, 7-day expiration
 - Rate limiting: 100 req/min
-- CORS configurado por origins
-- ORM previene SQL injection
-- Secrets solo desde variables de entorno
+- CORS configured by origins
+- ORM prevents SQL injection
+- Secrets loaded from environment variables only

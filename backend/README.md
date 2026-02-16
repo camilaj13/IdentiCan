@@ -1,13 +1,13 @@
 # IdentiCan - Backend
 
-API REST construida con FastAPI para la identificación biométrica canina.
+REST API built with FastAPI for canine biometric identification.
 
-## Requisitos
+## Requirements
 
 - Python 3.11+
 - PostgreSQL 14+
 
-## Instalación
+## Installation
 
 ```bash
 cd backend
@@ -16,25 +16,25 @@ source venv/bin/activate  # Linux/Mac
 pip install -r requirements.txt
 ```
 
-## Configuración
+## Configuration
 
-Copiar `.env.example` a `.env` y configurar las variables:
+Copy `.env.example` to `.env` and configure the variables:
 
 ```bash
 cp .env.example .env
 ```
 
-## Ejecución
+## Running
 
 ```bash
-# Desarrollo
+# Development
 uvicorn app.main:app --reload
 
-# O directamente
+# Or directly
 python app/main.py
 ```
 
-La documentación interactiva está disponible en `http://localhost:8000/docs`.
+Interactive documentation is available at `http://localhost:8000/docs`.
 
 ## Tests
 
@@ -42,15 +42,15 @@ La documentación interactiva está disponible en `http://localhost:8000/docs`.
 pytest tests/ -v
 ```
 
-## Endpoints principales
+## Main Endpoints
 
-| Método | Ruta | Descripción |
-|--------|------|-------------|
-| POST | /api/auth/register | Registro |
+| Method | Route | Description |
+|--------|-------|-------------|
+| POST | /api/auth/register | Register |
 | POST | /api/auth/login | Login |
-| GET | /api/auth/me | Perfil |
-| POST | /api/dogs | Crear perro |
-| GET | /api/dogs | Listar perros |
-| POST | /api/nose/verify | Verificar nariz |
-| POST | /api/vaccines | Agregar vacuna |
-| GET | /api/qr/generate/{id} | Generar QR PNG |
+| GET | /api/auth/me | Profile |
+| POST | /api/dogs | Create dog |
+| GET | /api/dogs | List dogs |
+| POST | /api/nose/verify | Verify nose |
+| POST | /api/vaccines | Add vaccine |
+| GET | /api/qr/generate/{id} | Generate QR PNG |

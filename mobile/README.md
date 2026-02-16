@@ -1,33 +1,33 @@
-# IdentiCan - App Móvil
+# IdentiCan - Mobile App
 
-Aplicación móvil React Native + Expo para IdentiCan.
+React Native + Expo mobile application for IdentiCan.
 
-## Requisitos
+## Requirements
 
 - Node.js 18+
 - Expo CLI
-- Expo Go (en el celular)
+- Expo Go (on your phone)
 
-## Instalación
+## Installation
 
 ```bash
 cd mobile
 npm install
 ```
 
-## Ejecución
+## Running
 
 ```bash
 npx expo start
 ```
 
-Escaneá el QR con Expo Go para abrir la app.
+Scan the QR code with Expo Go to open the app.
 
-## Pantallas
+## Screens
 
-- **Login/Register**: Autenticación de usuarios
-- **Mis Perros**: Lista de perros registrados
-- **Agregar Perro**: Formulario de registro
-- **Perfil del Perro**: Datos, vacunas, QR
-- **Escanear Nariz**: Verificación biométrica
-- **Escanear QR**: Búsqueda por código QR
+- **Login/Register**: User authentication
+- **My Dogs**: List of registered dogs
+- **Add Dog**: Registration form
+- **Dog Profile**: Details, vaccines, QR
+- **Scan Nose**: Biometric verification
+- **Scan QR**: QR code lookup

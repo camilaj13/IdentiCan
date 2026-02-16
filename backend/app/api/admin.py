@@ -11,7 +11,7 @@ from app.models.verification_log import VerificationLog
 from app.schemas.dog import DogResponse
 from app.schemas.user import UserResponse
 
-router = APIRouter(prefix="/api/admin", tags=["Administración"])
+router = APIRouter(prefix="/api/admin", tags=["Admin"])
 
 admin_only = require_role("admin")
 
@@ -21,7 +21,7 @@ def list_users(
     db: Session = Depends(get_db),
     current_user: User = Depends(admin_only),
 ):
-    """Listar todos los usuarios (solo admin)."""
+    """List all users (admin only)."""
     users = db.query(User).order_by(User.created_at.desc()).all()
     return [UserResponse.model_validate(u) for u in users]
 
@@ -31,7 +31,7 @@ def list_all_dogs(
     db: Session = Depends(get_db),
     current_user: User = Depends(admin_only),
 ):
-    """Listar todos los perros registrados (solo admin)."""
+    """List all registered dogs (admin only)."""
     dogs = db.query(Dog).order_by(Dog.created_at.desc()).all()
     return [DogResponse.model_validate(d) for d in dogs]
 
@@ -42,17 +42,17 @@ def toggle_premium(
     db: Session = Depends(get_db),
     current_user: User = Depends(admin_only),
 ):
-    """Activar/desactivar Premium para un usuario (solo admin)."""
+    """Toggle Premium for a user (admin only)."""
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
-        raise HTTPException(status_code=404, detail="Usuario no encontrado")
+        raise HTTPException(status_code=404, detail="User not found")
 
     user.is_premium = not user.is_premium
     db.commit()
     db.refresh(user)
 
     return {
-        "message": f"Premium {'activado' if user.is_premium else 'desactivado'} para {user.name}",
+        "message": f"Premium {'enabled' if user.is_premium else 'disabled'} for {user.name}",
         "user_id": user.id,
         "is_premium": user.is_premium,
     }
@@ -63,7 +63,7 @@ def get_stats(
     db: Session = Depends(get_db),
     current_user: User = Depends(admin_only),
 ):
-    """Obtener estadísticas generales (solo admin)."""
+    """Get general statistics (admin only)."""
     total_users = db.query(User).count()
     premium_users = db.query(User).filter(User.is_premium.is_(True)).count()
     total_dogs = db.query(Dog).count()

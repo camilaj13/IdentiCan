@@ -12,12 +12,12 @@ from app.i18n import get_language, t
 from app.models.user import User
 from app.schemas.user import TokenResponse, UserLogin, UserRegister, UserResponse
 
-router = APIRouter(prefix="/api/auth", tags=["Autenticación"])
+router = APIRouter(prefix="/api/auth", tags=["Authentication"])
 
 
 @router.post("/register", response_model=TokenResponse, status_code=status.HTTP_201_CREATED)
 def register(data: UserRegister, request: Request, db: Session = Depends(get_db)):
-    """Registrar un nuevo usuario."""
+    """Register a new user."""
     lang = get_language(request)
     existing = db.query(User).filter(User.email == data.email).first()
     if existing:
@@ -51,7 +51,7 @@ def register(data: UserRegister, request: Request, db: Session = Depends(get_db)
 
 @router.post("/login", response_model=TokenResponse)
 def login(data: UserLogin, request: Request, db: Session = Depends(get_db)):
-    """Iniciar sesión con email y contraseña."""
+    """Log in with email and password."""
     lang = get_language(request)
     user = db.query(User).filter(User.email == data.email).first()
     if not user or not verify_password(data.password, user.password_hash):
@@ -69,5 +69,5 @@ def login(data: UserLogin, request: Request, db: Session = Depends(get_db)):
 
 @router.get("/me", response_model=UserResponse)
 def get_me(current_user: User = Depends(get_current_user)):
-    """Obtener datos del usuario autenticado."""
+    """Get authenticated user data."""
     return UserResponse.model_validate(current_user)

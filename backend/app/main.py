@@ -38,8 +38,8 @@ limiter = Limiter(key_func=get_remote_address, default_limits=["100/minute"])
 app = FastAPI(
     title=settings.APP_NAME,
     description=(
-        "API de identificación biométrica canina. "
-        "Registrá a tu perro, guardá sus vacunas y generá su QR único."
+        "Canine biometric identification API. "
+        "Register your dog, track vaccines, and generate a unique QR code."
     ),
     version="1.0.0",
     docs_url="/docs",
