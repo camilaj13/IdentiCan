@@ -1,6 +1,6 @@
 # IdentiCan
 
-Plataforma de identificación biométrica canina para Argentina. Registrá a tu perro, guardá sus vacunas y generá un QR único para identificarlo.
+Plataforma de identificación biométrica canina, mediante fotografía de narices. Registrá a tu perro, guardá sus vacunas y generá un QR único para identificarlo.
 
 ## App Preview
 
@@ -12,7 +12,6 @@ Plataforma de identificación biométrica canina para Argentina. Registrá a tu 
 - **Identificación biométrica** por huella nasal (basado en Pet-ReID-IMAG)
 - **Código QR único** por perro (PNG + PDF 3x3cm para collar)
 - **Registro de vacunas** con historial completo
-- **Límite freemium**: 3 verificaciones/día gratis, ilimitadas para Premium
 - **Roles**: usuario, verificador, admin
 
 ## Estructura del Proyecto
@@ -67,7 +66,6 @@ Escanear el QR con Expo Go.
 - [API Reference](docs/API.md)
 - [Deployment](docs/DEPLOYMENT.md)
 - [Arquitectura](docs/ARCHITECTURE.md)
-- [Roadmap](ROADMAP.md)
 
 ## Modelo ML
 
