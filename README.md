@@ -2,6 +2,10 @@
 
 Plataforma de identificación biométrica canina para Argentina. Registrá a tu perro, guardá sus vacunas y generá un QR único para identificarlo.
 
+## App Preview
+
+![IdentiCan Mobile App UI](docs/screenshots/identican_ui_overview.png)
+
 ## Características
 
 - **Registro de perros** con datos completos (raza, peso, origen, etc.)
