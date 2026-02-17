@@ -67,31 +67,50 @@ def _load_model():
     config_file = str(ML_MODEL_DIR / "configs" / "s101_256_submit.yaml")
     cfg.merge_from_file(config_file)
 
+    # Try to find trained weights first
+    weights_path = os.environ.get("ML_MODEL_WEIGHTS", "")
+    if not weights_path:
+        default_path = ML_MODEL_DIR / "logs" / "s101_256" / "model_final.pth"
+        if default_path.exists():
+            weights_path = str(default_path)
+
+    # Check if the pretrained backbone is available
+    pretrain_path = ML_MODEL_DIR / "pretrain" / "resnest101-22405ba7.pth"
+    has_pretrained_backbone = pretrain_path.exists()
+
     cfg.defrost()
     cfg.MODEL.DEVICE = "cpu"
-    cfg.MODEL.BACKBONE.PRETRAIN = False
     cfg.MODEL.HEADS.NUM_CLASSES = 1
+
+    if weights_path and os.path.isfile(weights_path):
+        # Full trained weights available — no need for backbone pretrain
+        cfg.MODEL.BACKBONE.PRETRAIN = False
+    elif has_pretrained_backbone:
+        # No trained weights, but pretrained backbone exists — use it
+        cfg.MODEL.BACKBONE.PRETRAIN = True
+        cfg.MODEL.BACKBONE.PRETRAIN_PATH = str(pretrain_path)
+    else:
+        cfg.MODEL.BACKBONE.PRETRAIN = False
+
     cfg.freeze()
 
     model = build_model(cfg)
     model.eval()
 
-    # Try to load trained weights
-    weights_path = os.environ.get("ML_MODEL_WEIGHTS", "")
-    if not weights_path:
-        # Check default location
-        default_path = ML_MODEL_DIR / "logs" / "s101_256" / "model_final.pth"
-        if default_path.exists():
-            weights_path = str(default_path)
-
     if weights_path and os.path.isfile(weights_path):
-        logger.info("Loading Pet-ReID weights from %s", weights_path)
+        logger.info("Loading trained Pet-ReID weights from %s", weights_path)
         Checkpointer(model).load(weights_path)
+    elif has_pretrained_backbone:
+        logger.info(
+            "Using ImageNet-pretrained ResNeSt-101 backbone (%s). "
+            "For best accuracy, run ml_model/download_weights.sh to "
+            "download the trained Pet-ReID weights.",
+            pretrain_path,
+        )
     else:
         logger.warning(
-            "No trained Pet-ReID weights found. "
-            "Model will use untrained weights. "
-            "Set ML_MODEL_WEIGHTS env var to the path of model_final.pth."
+            "No weights found. Run ml_model/download_weights.sh to "
+            "download both pretrained backbone and trained Pet-ReID weights."
         )
 
     _model = model
