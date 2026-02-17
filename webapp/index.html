@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IdentiCan Admin</title>
+  <link rel="stylesheet" href="/webapp/static/styles.css" />
+</head>
+<body>
+
+  <!-- ── Login Screen ─────────────────────────────── -->
+  <div id="login-screen" class="login-container" style="display:none;">
+    <div class="login-card">
+      <h1>IdentiCan</h1>
+      <p class="subtitle">Admin Dashboard</p>
+
+      <div id="login-error" class="error-msg"></div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" placeholder="admin@identican.app" required />
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" placeholder="Password" required />
+        </div>
+        <button type="submit" class="btn btn-primary">Sign In</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── App Screen ───────────────────────────────── -->
+  <div id="app-screen" class="app-layout" style="display:none;">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>IdentiCan</h2>
+        <div class="role-badge">Admin Panel</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-item active" data-page="dashboard">
+          <span class="icon">&#127968;</span>
+          <span>Dashboard</span>
+        </div>
+        <div class="nav-item" data-page="users">
+          <span class="icon">&#128101;</span>
+          <span>Users &amp; Dogs</span>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="admin-name">Signed in as <strong id="admin-display-name">Admin</strong></div>
+        <button id="btn-logout" class="btn-logout">Sign Out</button>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <main class="main-content">
+
+      <!-- Dashboard Page -->
+      <section id="page-dashboard" class="page-section active">
+        <div class="page-header">
+          <h1>Dashboard</h1>
+          <p>Overview of IdentiCan platform activity</p>
+        </div>
+        <div id="dashboard-content">
+          <div class="loading"><div class="spinner"></div></div>
+        </div>
+      </section>
+
+      <!-- Users Page -->
+      <section id="page-users" class="page-section">
+        <div class="page-header">
+          <h1>Users &amp; Dogs</h1>
+          <p>All registered users sorted alphabetically, with their dogs</p>
+        </div>
+
+        <div class="search-bar">
+          <input type="text" id="user-search" placeholder="Search by name, email, or dog name..." />
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Registered Users</h2>
+          </div>
+          <div class="card-body">
+            <div class="table-wrapper">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Registered</th>
+                    <th>Role / Plan</th>
+                    <th>Dogs</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table-body">
+                  <tr><td colspan="6"><div class="loading"><div class="spinner"></div></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Dog Detail Modal -->
+  <div id="dog-modal" class="modal-overlay">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 id="modal-dog-title">Dog Details</h2>
+        <button id="modal-close-btn" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body" id="modal-dog-body"></div>
+    </div>
+  </div>
+
+  <script src="/webapp/static/app.js"></script>
+</body>
+</html>

@@ -1,7 +1,9 @@
 from datetime import datetime
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, EmailStr
+
+from app.schemas.dog import DogResponse
 
 
 class UserRegister(BaseModel):
@@ -24,6 +26,19 @@ class UserResponse(BaseModel):
     role: str
     is_premium: bool
     created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class UserWithDogsResponse(BaseModel):
+    id: int
+    email: str
+    name: str
+    phone: Optional[str] = None
+    role: str
+    is_premium: bool
+    created_at: datetime
+    dogs: List[DogResponse] = []
 
     model_config = {"from_attributes": True}
 

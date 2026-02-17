@@ -1,7 +1,8 @@
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
+from sqlalchemy import func
+from sqlalchemy.orm import Session, joinedload
 
 from app.core.database import get_db
 from app.core.security import require_role
@@ -9,7 +10,7 @@ from app.models.dog import Dog
 from app.models.user import User
 from app.models.verification_log import VerificationLog
 from app.schemas.dog import DogResponse
-from app.schemas.user import UserResponse
+from app.schemas.user import UserResponse, UserWithDogsResponse
 
 router = APIRouter(prefix="/api/admin", tags=["Admin"])
 
@@ -24,6 +25,36 @@ def list_users(
     """List all users (admin only)."""
     users = db.query(User).order_by(User.created_at.desc()).all()
     return [UserResponse.model_validate(u) for u in users]
+
+
+@router.get("/users-detail", response_model=List[UserWithDogsResponse])
+def list_users_with_dogs(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(admin_only),
+):
+    """List all users with their dogs, sorted A-Z by name (admin only)."""
+    users = (
+        db.query(User)
+        .options(joinedload(User.dogs))
+        .order_by(func.lower(User.name))
+        .all()
+    )
+    results = []
+    for u in users:
+        dogs = [DogResponse.model_validate(d) for d in u.dogs]
+        results.append(
+            UserWithDogsResponse(
+                id=u.id,
+                email=u.email,
+                name=u.name,
+                phone=u.phone,
+                role=u.role,
+                is_premium=u.is_premium,
+                created_at=u.created_at,
+                dogs=dogs,
+            )
+        )
+    return results
 
 
 @router.get("/dogs", response_model=List[DogResponse])

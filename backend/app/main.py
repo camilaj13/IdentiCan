@@ -1,5 +1,10 @@
+import os
+from pathlib import Path
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.util import get_remote_address
@@ -10,6 +15,9 @@ import logging
 from app.api import admin, auth, dogs, nose, payments, qr, vaccines
 from app.core.config import settings
 from app.core.database import Base, engine
+
+# Webapp directory (../webapp relative to backend/)
+WEBAPP_DIR = Path(__file__).resolve().parent.parent.parent / "webapp"
 
 logger = logging.getLogger(__name__)
 
@@ -82,6 +90,16 @@ def root():
 @app.get("/health", tags=["Health"])
 def health():
     return {"status": "ok"}
+
+
+# ── Admin Web App (served as static files) ───────────────────
+if WEBAPP_DIR.exists():
+    app.mount("/webapp/static", StaticFiles(directory=str(WEBAPP_DIR / "static")), name="webapp-static")
+
+    @app.get("/admin", tags=["Admin Webapp"], include_in_schema=False)
+    def admin_webapp():
+        """Serve the admin web application."""
+        return FileResponse(str(WEBAPP_DIR / "index.html"))
 
 
 if __name__ == "__main__":
