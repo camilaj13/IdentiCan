@@ -7,17 +7,20 @@
 # Modified from: https://github.com/open-mmlab/OpenUnReID/blob/66bb2ae0b00575b80fbe8915f4d4f4739cc21206/openunreid/core/utils/compute_dist.py
 
 
-import faiss
 import numpy as np
 import torch
 import torch.nn.functional as F
 
-from .faiss_utils import (
-    index_init_cpu,
-    index_init_gpu,
-    search_index_pytorch,
-    search_raw_array_pytorch,
-)
+try:
+    import faiss
+    from .faiss_utils import (
+        index_init_cpu,
+        index_init_gpu,
+        search_index_pytorch,
+        search_raw_array_pytorch,
+    )
+except ImportError:
+    faiss = None
 
 __all__ = [
     "build_dist",

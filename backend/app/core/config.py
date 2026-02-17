@@ -23,6 +23,10 @@ class Settings(BaseSettings):
     R2_SECRET_KEY: str = ""
     R2_BUCKET_NAME: str = "identican-images"
 
+    # ML Model (Pet-ReID-IMAG)
+    ML_MODEL_WEIGHTS: str = ""  # Path to model_final.pth (auto-detected if empty)
+    MATCH_THRESHOLD: float = 0.5  # Cosine similarity threshold for nose match
+
     # Features
     PREMIUM_ENABLED: bool = False
     VERIFICATION_LIMIT_FREE: int = 3
