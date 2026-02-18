@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IdentiCan</title>
+  <link rel="stylesheet" href="/webapp/static/webapp.css" />
+</head>
+<body>
+
+  <!-- ── Auth Screens ─────────────────────────────────── -->
+  <div id="auth-screen" style="display:none;">
+
+    <!-- Login -->
+    <div id="login-view" class="auth-container">
+      <div class="auth-card">
+        <div class="auth-header">
+          <div class="lang-selector" id="auth-lang-selector"></div>
+          <div class="auth-logo">&#128021;</div>
+          <h1 class="auth-title">IdentiCan</h1>
+          <p class="auth-subtitle" data-i18n="auth.subtitle"></p>
+        </div>
+
+        <div id="login-error" class="alert alert-error"></div>
+
+        <form id="login-form" class="auth-form">
+          <div class="input-group">
+            <label data-i18n="auth.email"></label>
+            <input type="email" id="login-email" required autocomplete="email" />
+          </div>
+          <div class="input-group">
+            <label data-i18n="auth.password"></label>
+            <div class="password-wrapper">
+              <input type="password" id="login-password" required autocomplete="current-password" />
+              <button type="button" class="toggle-password" data-target="login-password">&#128065;</button>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full" id="login-btn">
+            <span data-i18n="auth.login"></span>
+          </button>
+        </form>
+
+        <button class="btn-link" id="goto-register" data-i18n="auth.noAccount"></button>
+      </div>
+    </div>
+
+    <!-- Register -->
+    <div id="register-view" class="auth-container" style="display:none;">
+      <div class="auth-card">
+        <div class="auth-header">
+          <h2 data-i18n="nav.createAccount"></h2>
+        </div>
+
+        <div id="register-error" class="alert alert-error"></div>
+
+        <form id="register-form" class="auth-form">
+          <div class="input-group">
+            <label><span data-i18n="auth.fullName"></span> *</label>
+            <input type="text" id="reg-name" required />
+          </div>
+          <div class="input-group">
+            <label><span data-i18n="auth.email"></span> *</label>
+            <input type="email" id="reg-email" required autocomplete="email" />
+          </div>
+          <div class="input-group">
+            <label data-i18n="auth.phone"></label>
+            <input type="tel" id="reg-phone" />
+          </div>
+          <div class="input-group">
+            <label><span data-i18n="auth.password"></span> *</label>
+            <div class="password-wrapper">
+              <input type="password" id="reg-password" required minlength="6" />
+              <button type="button" class="toggle-password" data-target="reg-password">&#128065;</button>
+            </div>
+          </div>
+          <div class="input-group">
+            <label><span data-i18n="auth.confirmPassword"></span> *</label>
+            <input type="password" id="reg-confirm-password" required />
+          </div>
+          <button type="submit" class="btn btn-primary btn-full" id="register-btn">
+            <span data-i18n="auth.register"></span>
+          </button>
+        </form>
+
+        <button class="btn-link" id="goto-login" data-i18n="auth.hasAccount"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Main App ─────────────────────────────────────── -->
+  <div id="app-screen" style="display:none;">
+
+    <!-- Top Header Bar -->
+    <header class="app-header">
+      <div class="header-left">
+        <button id="back-btn" class="header-icon-btn" style="display:none;">&#8592;</button>
+        <h1 id="header-title">IdentiCan</h1>
+      </div>
+      <div class="header-right">
+        <div class="lang-selector" id="app-lang-selector"></div>
+        <button id="logout-btn" class="header-icon-btn" title="Logout">&#9211;</button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="app-content" class="app-main">
+
+      <!-- Home Screen (My Dogs) -->
+      <section id="screen-home" class="screen">
+        <div class="screen-header-bar">
+          <div>
+            <h2 id="home-greeting" class="greeting-text"></h2>
+            <p id="home-dog-count" class="dog-count-text"></p>
+          </div>
+        </div>
+        <div id="home-loading" class="loading-center"><div class="spinner"></div></div>
+        <div id="dogs-empty" class="empty-state" style="display:none;">
+          <div class="empty-icon">&#128062;</div>
+          <div class="empty-title" data-i18n="home.noDogs"></div>
+          <div class="empty-subtitle" data-i18n="home.noDogsHint"></div>
+        </div>
+        <div id="dogs-list" class="dogs-grid"></div>
+        <button id="add-dog-fab" class="fab" title="Add Dog">+</button>
+      </section>
+
+      <!-- Add Dog Screen -->
+      <section id="screen-add-dog" class="screen" style="display:none;">
+        <div class="form-container">
+          <h3 class="section-title" data-i18n="addDog.basicInfo"></h3>
+
+          <div class="input-group">
+            <label><span data-i18n="addDog.dogName"></span> *</label>
+            <input type="text" id="dog-name" required />
+          </div>
+          <div class="input-group">
+            <label data-i18n="addDog.breed"></label>
+            <input type="text" id="dog-breed" />
+          </div>
+
+          <div class="input-group">
+            <label data-i18n="addDog.sex"></label>
+            <div class="segment-group" id="dog-sex-group">
+              <button class="segment-btn active" data-value="M" data-i18n="dog.male"></button>
+              <button class="segment-btn" data-value="F" data-i18n="dog.female"></button>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label data-i18n="addDog.origin"></label>
+            <div class="segment-group" id="dog-origin-group">
+              <button class="segment-btn active" data-value="adopted" data-i18n="addDog.adopted"></button>
+              <button class="segment-btn" data-value="purchased" data-i18n="addDog.purchased"></button>
+              <button class="segment-btn" data-value="rescued" data-i18n="addDog.rescued"></button>
+              <button class="segment-btn" data-value="other" data-i18n="addDog.other"></button>
+            </div>
+          </div>
+
+          <div class="row-2">
+            <div class="input-group">
+              <label data-i18n="addDog.age"></label>
+              <input type="number" id="dog-age" min="0" max="30" />
+            </div>
+            <div class="input-group">
+              <label data-i18n="addDog.weight"></label>
+              <input type="number" id="dog-weight" min="0" step="0.1" />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label data-i18n="addDog.color"></label>
+            <input type="text" id="dog-color" />
+          </div>
+          <div class="input-group">
+            <label data-i18n="addDog.microchip"></label>
+            <input type="text" id="dog-microchip" />
+          </div>
+
+          <h3 class="section-title" data-i18n="addDog.additionalInfo"></h3>
+
+          <div class="input-group">
+            <label data-i18n="addDog.behavior"></label>
+            <textarea id="dog-behavior" rows="3"></textarea>
+          </div>
+          <div class="input-group">
+            <label data-i18n="addDog.likes"></label>
+            <textarea id="dog-likes" rows="2"></textarea>
+          </div>
+          <div class="input-group">
+            <label data-i18n="addDog.allergies"></label>
+            <textarea id="dog-allergies" rows="2"></textarea>
+          </div>
+
+          <div id="add-dog-error" class="alert alert-error"></div>
+
+          <button id="submit-dog-btn" class="btn btn-primary btn-full">
+            <span data-i18n="addDog.registerDog"></span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Dog Profile Screen -->
+      <section id="screen-dog-profile" class="screen" style="display:none;">
+        <div id="dog-profile-content" class="profile-container"></div>
+      </section>
+
+      <!-- Vaccines Screen -->
+      <section id="screen-vaccines" class="screen" style="display:none;">
+        <div id="vaccines-content"></div>
+        <button id="add-vaccine-fab" class="fab" title="Add Vaccine">+</button>
+      </section>
+
+      <!-- Generate QR Screen -->
+      <section id="screen-qr" class="screen" style="display:none;">
+        <div id="qr-content" class="qr-container"></div>
+      </section>
+
+      <!-- Scan Nose Screen -->
+      <section id="screen-scan-nose" class="screen" style="display:none;">
+        <div class="scan-container">
+          <div class="scan-card">
+            <div class="scan-icon">&#128067;</div>
+            <h2 data-i18n="scanNose.title"></h2>
+            <p class="scan-description" data-i18n="scanNose.description"></p>
+            <div class="steps-list">
+              <div class="step-item">
+                <span class="step-number">1</span>
+                <span data-i18n="scanNose.step1"></span>
+              </div>
+              <div class="step-item">
+                <span class="step-number">2</span>
+                <span data-i18n="scanNose.step2"></span>
+              </div>
+              <div class="step-item">
+                <span class="step-number">3</span>
+                <span data-i18n="scanNose.step3"></span>
+              </div>
+            </div>
+          </div>
+
+          <button id="start-nose-scan-btn" class="btn btn-primary btn-full btn-large">
+            &#128247; <span data-i18n="scanNose.startScan"></span>
+          </button>
+          <button id="goto-scan-qr-btn" class="btn btn-outline btn-full">
+            <span data-i18n="scanNose.scanQRInstead"></span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Scan QR Screen -->
+      <section id="screen-scan-qr" class="screen" style="display:none;">
+        <div class="scan-container">
+          <div class="scan-card">
+            <div class="scan-icon">&#128241;</div>
+            <h2 data-i18n="scanQR.title"></h2>
+            <p class="scan-description" data-i18n="scanQR.description"></p>
+          </div>
+
+          <button id="open-qr-camera-btn" class="btn btn-primary btn-full btn-large">
+            &#128247; <span data-i18n="scanQR.openCamera"></span>
+          </button>
+
+          <p class="or-text" data-i18n="scanQR.manualEntry"></p>
+
+          <div class="input-group">
+            <label data-i18n="scanQR.qrPlaceholder"></label>
+            <input type="text" id="qr-manual-input" style="text-transform:uppercase;" />
+          </div>
+
+          <button id="qr-search-btn" class="btn btn-outline btn-full">
+            <span data-i18n="common.search"></span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Result Screen -->
+      <section id="screen-result" class="screen" style="display:none;">
+        <div id="result-content" class="result-container"></div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Tab Bar -->
+    <nav class="bottom-tabs" id="bottom-tabs">
+      <button class="tab-btn active" data-tab="mican">
+        <span class="tab-icon">&#128054;</span>
+        <span class="tab-label" data-i18n="nav.myCan"></span>
+      </button>
+      <button class="tab-btn" data-tab="verificador">
+        <span class="tab-icon">&#128269;</span>
+        <span class="tab-label" data-i18n="nav.verify"></span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Limit Modal -->
+  <div id="limit-modal" class="modal-overlay">
+    <div class="modal-card limit-modal-card">
+      <div class="limit-modal-icon">&#9888;&#65039;</div>
+      <h2 data-i18n="limit.title"></h2>
+      <p class="limit-description" data-i18n="limit.description"></p>
+      <div id="limit-usage-bar" class="limit-usage"></div>
+      <p class="limit-upgrade" data-i18n="limit.upgradeText"></p>
+      <button class="btn btn-secondary btn-full" id="limit-premium-btn" data-i18n="limit.viewPremium"></button>
+      <button class="btn-link" id="limit-close-btn" data-i18n="common.close"></button>
+    </div>
+  </div>
+
+  <!-- Vaccine Add Modal -->
+  <div id="vaccine-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2 data-i18n="vaccines.addVaccine"></h2>
+        <button class="modal-close" id="vaccine-modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="input-group">
+          <label><span data-i18n="vaccines.vaccineType"></span> *</label>
+          <input type="text" id="vax-type" />
+        </div>
+        <div class="input-group">
+          <label><span data-i18n="vaccines.date"></span> *</label>
+          <input type="date" id="vax-date" />
+        </div>
+        <div class="input-group">
+          <label data-i18n="vaccines.vet"></label>
+          <input type="text" id="vax-vet" />
+        </div>
+        <div class="input-group">
+          <label data-i18n="vaccines.clinic"></label>
+          <input type="text" id="vax-clinic" />
+        </div>
+        <div class="input-group">
+          <label data-i18n="vaccines.notes"></label>
+          <textarea id="vax-notes" rows="2"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button class="btn btn-text" id="vax-cancel-btn" data-i18n="common.cancel"></button>
+          <button class="btn btn-primary" id="vax-save-btn" data-i18n="common.save"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Confirm Modal -->
+  <div id="delete-modal" class="modal-overlay">
+    <div class="modal-card modal-small">
+      <h3 data-i18n="vaccines.deleteTitle"></h3>
+      <p data-i18n="vaccines.deleteConfirm"></p>
+      <div class="modal-actions">
+        <button class="btn btn-text" id="delete-cancel-btn" data-i18n="common.cancel"></button>
+        <button class="btn btn-danger" id="delete-confirm-btn" data-i18n="common.delete"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Snackbar -->
+  <div id="snackbar" class="snackbar"></div>
+
+  <script src="/webapp/static/webapp.js"></script>
+</body>
+</html>

@@ -92,7 +92,7 @@ def health():
     return {"status": "ok"}
 
 
-# ── Admin Web App (served as static files) ───────────────────
+# ── Web Apps (served as static files) ────────────────────────
 if WEBAPP_DIR.exists():
     app.mount("/webapp/static", StaticFiles(directory=str(WEBAPP_DIR / "static")), name="webapp-static")
 
@@ -100,6 +100,11 @@ if WEBAPP_DIR.exists():
     def admin_webapp():
         """Serve the admin web application."""
         return FileResponse(str(WEBAPP_DIR / "index.html"))
+
+    @app.get("/app", tags=["Web App"], include_in_schema=False)
+    def web_app():
+        """Serve the user-facing web application (mirrors mobile app)."""
+        return FileResponse(str(WEBAPP_DIR / "app.html"))
 
 
 if __name__ == "__main__":

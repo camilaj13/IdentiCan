@@ -31,10 +31,11 @@ MATCH_THRESHOLD = settings.MATCH_THRESHOLD
 def _check_verification_limit(user: User, db: Session, lang: str = "es") -> dict:
     """
     Check if the user has reached the daily verification limit.
-    Only admin users have unlimited verifications.
+    Admin and premium users have unlimited verifications.
+    Free users are limited to VERIFICATION_LIMIT_FREE per day.
     Returns usage info dict. Raises HTTPException if limit reached.
     """
-    if user.role == "admin":
+    if user.role == "admin" or user.is_premium:
         return {"limit": None, "used": 0, "remaining": None}
 
     today = date.today()
@@ -140,8 +141,8 @@ def verify_nose(
     embeddings using cosine similarity. Returns the best match
     above the confidence threshold.
 
-    Limits: 3 verifications per day for all regular users (free and premium).
-    Only admin users have unlimited verifications.
+    Limits: 3 verifications per day for free users.
+    Admin and premium users have unlimited verifications.
     """
     lang = get_language(request)
     usage = _check_verification_limit(current_user, db, lang)
